@@ -1,5 +1,6 @@
-package com.hammasir.routingreport.config;
+package com.hammasir.routingreport.auth;
 
+import com.hammasir.routingreport.auth.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
