@@ -1,4 +1,4 @@
-package com.hammasir.routingreport.auth;
+package com.hammasir.routingreport.authentication;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
