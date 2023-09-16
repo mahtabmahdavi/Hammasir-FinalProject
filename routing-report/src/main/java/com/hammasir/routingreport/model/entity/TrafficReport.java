@@ -15,5 +15,5 @@ public class TrafficReport extends Report {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "category")
-    private Traffic trafficCategory;
+    private Traffic category;
 }

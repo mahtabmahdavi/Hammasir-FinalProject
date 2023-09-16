@@ -1,6 +1,6 @@
 package com.hammasir.routingreport.model.enums;
 
-public enum WeatherCondition {
+public enum Weather {
 
     FOG,
     CHAINS,

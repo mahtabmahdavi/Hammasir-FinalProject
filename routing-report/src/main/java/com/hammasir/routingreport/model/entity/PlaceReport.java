@@ -1,6 +1,6 @@
 package com.hammasir.routingreport.model.entity;
 
-import com.hammasir.routingreport.model.enums.EventWay;
+import com.hammasir.routingreport.model.enums.Place;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -10,10 +10,10 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "event_way_reports")
-public class EventWayReport extends Report {
+@Table(name = "place_reports")
+public class PlaceReport extends Report {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "category")
-    private EventWay eventWayCategory;
+    private Place category;
 }

@@ -1,6 +1,6 @@
 package com.hammasir.routingreport.model.enums;
 
-public enum MapBug {
+public enum Bug {
 
     NO_ENTRY,
     DEAD_END,

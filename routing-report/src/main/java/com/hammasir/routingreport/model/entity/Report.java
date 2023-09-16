@@ -20,6 +20,9 @@ public abstract class Report {
     @Column(name = "id")
     private Long id;
 
+    @Column(name = "report_type", nullable = false)
+    private String type;
+
     @Column(name = "approved")
     private Boolean approved;
 
@@ -32,7 +35,7 @@ public abstract class Report {
     @Column(name = "expiration_time", nullable = false)
     private LocalDateTime expirationTime;
 
-    @Column(name = "location", columnDefinition = "geometry(Point, 4326)")
+    @Column(name = "location", columnDefinition = "geometry(Point, 4326)", nullable = false)
     private Geometry location;
 
     @ManyToOne(targetEntity = User.class, fetch = FetchType.LAZY)

@@ -6,7 +6,7 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 @Entity
-@Table(name = "speed_bump_reports")
-public class SpeedBumpReport extends Report {
+@Table(name = "bump_reports")
+public class BumpReport extends Report {
 
 }

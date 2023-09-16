@@ -1,6 +1,5 @@
 package com.hammasir.routingreport.model.dto;
 
-
 import lombok.Getter;
 import lombok.Setter;
 

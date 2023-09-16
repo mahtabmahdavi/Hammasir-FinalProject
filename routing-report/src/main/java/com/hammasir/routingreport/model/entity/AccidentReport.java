@@ -15,5 +15,5 @@ public class AccidentReport extends Report {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "category")
-    private Accident accidentCategory;
+    private Accident category;
 }

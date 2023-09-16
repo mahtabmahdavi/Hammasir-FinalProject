@@ -1,6 +1,6 @@
 package com.hammasir.routingreport.model.entity;
 
-import com.hammasir.routingreport.model.enums.MapBug;
+import com.hammasir.routingreport.model.enums.Event;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -10,10 +10,10 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "map_bug_reports")
-public class MapBugReport extends Report {
+@Table(name = "event_reports")
+public class EventReport extends Report {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "category")
-    private MapBug mapBugCategory;
+    private Event category;
 }

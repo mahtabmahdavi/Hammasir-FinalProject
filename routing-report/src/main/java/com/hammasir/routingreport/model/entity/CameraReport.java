@@ -15,5 +15,5 @@ public class CameraReport extends Report {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "category")
-    private Camera cameraCategory;
+    private Camera category;
 }

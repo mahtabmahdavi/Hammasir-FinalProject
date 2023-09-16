@@ -15,5 +15,5 @@ public class PoliceReport extends Report {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "category")
-    private Police policeCategory;
+    private Police category;
 }

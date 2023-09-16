@@ -1,6 +1,6 @@
 package com.hammasir.routingreport.model.entity;
 
-import com.hammasir.routingreport.model.enums.RoadLocation;
+import com.hammasir.routingreport.model.enums.Weather;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -10,10 +10,10 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "road_location_reports")
-public class RoadLocationReport extends Report {
+@Table(name = "weather_reports")
+public class WeatherReport extends Report {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "category")
-    private RoadLocation roadLocationCategory;
+    private Weather category;
 }

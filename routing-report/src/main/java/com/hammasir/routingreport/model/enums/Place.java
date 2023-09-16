@@ -1,6 +1,6 @@
 package com.hammasir.routingreport.model.enums;
 
-public enum RoadLocation {
+public enum Place {
 
     POLICE,
     PARKING,

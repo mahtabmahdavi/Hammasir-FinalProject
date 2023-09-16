@@ -1,6 +1,6 @@
 package com.hammasir.routingreport.model.enums;
 
-public enum EventWay {
+public enum Event {
 
     HOLE,
     BLOCKED_ROAD,
