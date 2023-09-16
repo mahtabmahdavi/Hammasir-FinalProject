@@ -4,7 +4,7 @@ import com.hammasir.routingreport.model.auth.AuthenticatedRequest;
 import com.hammasir.routingreport.model.auth.AuthenticatedResponse;
 import com.hammasir.routingreport.model.auth.RegisteredRequest;
 import com.hammasir.routingreport.authentication.JwtService;
-import com.hammasir.routingreport.model.Role;
+import com.hammasir.routingreport.model.enums.Role;
 import com.hammasir.routingreport.model.entity.User;
 import com.hammasir.routingreport.repository.UserRepository;
 import lombok.RequiredArgsConstructor;

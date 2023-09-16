@@ -1,7 +1,7 @@
 package com.hammasir.routingreport.model.entity;
 
-import com.hammasir.routingreport.model.*;
-
+import com.hammasir.routingreport.model.enums.Gender;
+import com.hammasir.routingreport.model.enums.Role;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
