@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 public abstract class Report {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "report_id")
-    @SequenceGenerator(name = "report_id", sequenceName = "report_seq", allocationSize = 1)
+    @SequenceGenerator(name = "report_id", sequenceName = "report_id_seq", allocationSize = 1)
     @Column(name = "id")
     private Long id;
 
