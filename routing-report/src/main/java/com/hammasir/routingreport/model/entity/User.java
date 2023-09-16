@@ -1,5 +1,6 @@
 package com.hammasir.routingreport.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.hammasir.routingreport.model.enums.Gender;
 import com.hammasir.routingreport.model.enums.Role;
 import jakarta.persistence.*;
@@ -57,6 +58,10 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     @Column(name = "role")
     private Role role;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<Report> reportList;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

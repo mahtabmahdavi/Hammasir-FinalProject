@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.locationtech.jts.geom.Geometry;
 
 import java.time.LocalDateTime;
 
@@ -30,8 +31,11 @@ public abstract class Report {
 
     @Column(name = "expiration_time", nullable = false)
     private LocalDateTime expirationTime;
-//    private Geom geometry;
 
-//    @ManyToOne
-//    private User manufacturer;
+    @Column(name = "location", columnDefinition = "geometry(Point, 4326)")
+    private Geometry location;
+
+    @ManyToOne(targetEntity = User.class, fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 }
