@@ -1,12 +1,20 @@
 package com.hammasir.routingreport.controller;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.hammasir.routingreport.model.dto.ReportDto;
+import com.hammasir.routingreport.service.ReportService;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping(value = "reports/")
+@RequestMapping(value = "reports")
 public class ReportController {
+
+    private final ReportService reportService;
+
+    public ReportController(ReportService reportService) {
+        this.reportService = reportService;
+    }
+
 
 //    @GetMapping
 //    public ResponseEntity<User> create(@RequestBody RestaurantDTO restaurant) {
@@ -20,4 +28,10 @@ public class ReportController {
 //            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 //        }
 //    }
+
+    @PostMapping(value = "create")
+    public ResponseEntity<String> create(@RequestBody ReportDto report) {
+        reportService.createReport(report);
+        return null;
+    }
 }
