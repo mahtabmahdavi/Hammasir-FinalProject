@@ -13,7 +13,7 @@ import java.util.Optional;
 public interface AccidentRepository extends JpaRepository<AccidentReport, Long> {
 
     @Query("SELECT * FROM AccidentReport ar WHERE ST_Equals(ar.location, ST_GeomFromText(:location)) " +
-            "AND ar.expirationTime.isAfter(:expirationTime)")
+           "AND ar.expirationTime > :expirationTime")
     Optional<AccidentReport> findByLocationAndExpirationTime(@Param("location") String location,
                                                              @Param("expirationTime") LocalDateTime expirationTime);
 //    @Query("SELECT ar FROM AccidentReport ar WHERE ar.user = :user")

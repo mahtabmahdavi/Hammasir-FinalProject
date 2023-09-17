@@ -35,12 +35,7 @@ public class EventService {
             newReport.setType(report.getType());
             newReport.setLocation(geometryFactory.createGeometry(report));
             newReport.setUser(userFactory.findUser(report));
-            switch (report.getCategory()) {
-                case "HOLE" -> newReport.setCategory(Event.HOLE);
-                case "BLOCKED_ROAD" -> newReport.setCategory(Event.BLOCKED_ROAD);
-                case "CONSTRUCTION_OPERATION" -> newReport.setCategory(Event.CONSTRUCTION_OPERATION);
-                default -> throw new IllegalArgumentException("Category of event report is NOT valid!");
-            }
+            newReport.setCategory(Event.fromValue(report.getCategory()));
             eventRepository.save(newReport);
             return ReportDto.builder()
                     .category(newReport.getCategory().name())

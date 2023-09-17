@@ -35,12 +35,7 @@ public class WeatherService {
             newReport.setType(report.getType());
             newReport.setLocation(geometryFactory.createGeometry(report));
             newReport.setUser(userFactory.findUser(report));
-            switch (report.getCategory()) {
-                case "FOG" -> newReport.setCategory(Weather.FOG);
-                case "CHAINS" -> newReport.setCategory(Weather.CHAINS);
-                case "SLIP_ROAD" -> newReport.setCategory(Weather.SLIP_ROAD);
-                default -> throw new IllegalArgumentException("Category of weather report is NOT valid!");
-            }
+            newReport.setCategory(Weather.fromValue(report.getCategory()));
             weatherRepository.save(newReport);
             return ReportDto.builder()
                     .category(newReport.getCategory().name())

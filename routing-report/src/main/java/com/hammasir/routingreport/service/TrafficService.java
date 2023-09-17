@@ -35,12 +35,7 @@ public class TrafficService {
             newReport.setType(report.getType());
             newReport.setLocation(geometryFactory.createGeometry(report));
             newReport.setUser(userFactory.findUser(report));
-            switch (report.getCategory()) {
-                case "JAM" -> newReport.setCategory(Traffic.JAM);
-                case "SMOOTH" -> newReport.setCategory(Traffic.SMOOTH);
-                case "SEMI_HEAVY" -> newReport.setCategory(Traffic.SEMI_HEAVY);
-                default -> throw new IllegalArgumentException("Category of traffic report is NOT valid!");
-            }
+            newReport.setCategory(Traffic.fromValue(report.getCategory()));
             trafficRepository.save(newReport);
             return ReportDto.builder()
                     .category(newReport.getCategory().name())

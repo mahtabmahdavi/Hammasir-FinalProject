@@ -35,15 +35,7 @@ public class PlaceService {
             newReport.setType(report.getType());
             newReport.setLocation(geometryFactory.createGeometry(report));
             newReport.setUser(userFactory.findUser(report));
-            switch (report.getCategory()) {
-                case "POLICE" -> newReport.setCategory(Place.POLICE);
-                case "PARKING" -> newReport.setCategory(Place.PARKING);
-                case "GAS_STATION" -> newReport.setCategory(Place.GAS_STATION);
-                case "PETROL_STATION" -> newReport.setCategory(Place.PETROL_STATION);
-                case "RED_CRESCENT" -> newReport.setCategory(Place.RED_CRESCENT);
-                case "WELFARE_SERVICE" -> newReport.setCategory(Place.WELFARE_SERVICE);
-                default -> throw new IllegalArgumentException("Category of place report is NOT valid!");
-            }
+            newReport.setCategory(Place.fromValue(report.getCategory()));
             placeRepository.save(newReport);
             return ReportDto.builder()
                     .category(newReport.getCategory().name())

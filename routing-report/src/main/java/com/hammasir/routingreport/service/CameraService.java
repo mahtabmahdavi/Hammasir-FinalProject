@@ -35,11 +35,7 @@ public class CameraService {
             newReport.setType(report.getType());
             newReport.setLocation(geometryFactory.createGeometry(report));
             newReport.setUser(userFactory.findUser(report));
-            switch (report.getCategory()) {
-                case "RED_LIGHT" -> newReport.setCategory(Camera.RED_LIGHT);
-                case "SPEED_CONTROL" -> newReport.setCategory(Camera.SPEED_CONTROL);
-                default -> throw new IllegalArgumentException("Category of camera report is NOT valid!");
-            }
+            newReport.setCategory(Camera.fromValue(report.getCategory()));
             cameraRepository.save(newReport);
             return ReportDto.builder()
                     .category(newReport.getCategory().name())

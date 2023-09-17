@@ -37,12 +37,7 @@ public class AccidentService {
             newReport.setType(report.getType());
             newReport.setLocation(geometryFactory.createGeometry(report));
             newReport.setUser(userFactory.findUser(report));
-            switch (report.getCategory()) {
-                case "LIGHT" -> newReport.setCategory(Accident.LIGHT);
-                case "HEAVY" -> newReport.setCategory(Accident.HEAVY);
-                case "OPPOSITE_LINE" -> newReport.setCategory(Accident.OPPOSITE_LINE);
-                default -> throw new IllegalArgumentException("Category of accident report is NOT valid!");
-            }
+            newReport.setCategory(Accident.fromValue(report.getCategory()));
             accidentRepository.save(newReport);
             return ReportDto.builder()
                     .category(newReport.getCategory().name())

@@ -35,15 +35,7 @@ public class BugService {
             newReport.setType(report.getType());
             newReport.setLocation(geometryFactory.createGeometry(report));
             newReport.setUser(userFactory.findUser(report));
-            switch (report.getCategory()) {
-                case "NO_ENTRY" -> newReport.setCategory(Bug.NO_ENTRY);
-                case "DEAD_END" -> newReport.setCategory(Bug.DEAD_END);
-                case "DIRT_ROAD" -> newReport.setCategory(Bug.DIRT_ROAD);
-                case "NO_CAR_PATH" -> newReport.setCategory(Bug.NO_CAR_PATH);
-                case "FLOW_DIRECTION" -> newReport.setCategory(Bug.FLOW_DIRECTION);
-                case "OTHER" -> newReport.setCategory(Bug.OTHER);
-                default -> throw new IllegalArgumentException("Category of bug report is NOT valid!");
-            }
+            newReport.setCategory(Bug.fromValue(report.getCategory()));
             bugRepository.save(newReport);
             return ReportDto.builder()
                     .category(newReport.getCategory().name())
