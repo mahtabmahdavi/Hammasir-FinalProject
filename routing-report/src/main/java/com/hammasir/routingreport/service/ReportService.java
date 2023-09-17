@@ -1,8 +1,6 @@
 package com.hammasir.routingreport.service;
 
-import com.hammasir.routingreport.component.GeometryFactory;
 import com.hammasir.routingreport.component.ReportFactory;
-import com.hammasir.routingreport.component.UserFactory;
 import com.hammasir.routingreport.model.dto.ReportDto;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +14,7 @@ public class ReportService {
     }
 
     public ReportDto createReport(ReportDto reportDto) {
-        return reportFactory.createAndSaveReport(reportDto);
+        return reportFactory.createReport(reportDto);
     }
 
 }
