@@ -11,7 +11,7 @@ public class ReportService {
 
     private final ReportFactory reportFactory;
 
-    public ReportService(ReportFactory reportFactory, GeometryFactory geometryFactory, UserFactory userFactory) {
+    public ReportService(ReportFactory reportFactory) {
         this.reportFactory = reportFactory;
     }
 
