@@ -30,8 +30,7 @@ public class ReportController {
 //    }
 
     @PostMapping(value = "create")
-    public ResponseEntity<String> create(@RequestBody ReportDto report) {
-        reportService.createReport(report);
-        return null;
+    public ResponseEntity<ReportDto> create(@RequestBody ReportDto report) {
+        return ResponseEntity.ok(reportService.createReport(report));
     }
 }
