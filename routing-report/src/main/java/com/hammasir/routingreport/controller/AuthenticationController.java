@@ -15,18 +15,13 @@ public class AuthenticationController {
 
     private  final AuthenticationService authenticationService;
 
-    @GetMapping
-    public ResponseEntity<String> welcome() {
-        return ResponseEntity.ok("Welcome to Routing Report System.");
-    }
-
     @PostMapping(value = "/signup")
-    public ResponseEntity<AuthenticatedResponse> signUp(@RequestBody RegisteredRequest request) {
-        return ResponseEntity.ok(authenticationService.signUpUser(request));
+    public ResponseEntity<AuthenticatedResponse> signup(@RequestBody RegisteredRequest request) {
+        return ResponseEntity.ok(authenticationService.signupUser(request));
     }
 
-    @PostMapping(value = "/signin")
-    public ResponseEntity<AuthenticatedResponse> signIn(@RequestBody AuthenticatedRequest request) {
-        return ResponseEntity.ok(authenticationService.signInUser(request));
+    @PostMapping(value = "/login")
+    public ResponseEntity<AuthenticatedResponse> login(@RequestBody AuthenticatedRequest request) {
+        return ResponseEntity.ok(authenticationService.loginUser(request));
     }
 }

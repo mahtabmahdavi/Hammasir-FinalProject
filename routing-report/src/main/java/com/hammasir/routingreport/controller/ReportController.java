@@ -35,11 +35,6 @@ public class ReportController {
     @PostMapping(value = "/create")
     public ResponseEntity<ReportDto> create(HttpServletRequest request, @RequestBody ReportDto report) {
         try {
-            String jwtToken = request.getHeader("Authorization");
-            if (jwtToken != null && jwtToken.startsWith("Bearer ")) {
-                String token = jwtToken.substring(7);
-                report.setUsername(jwtService.extractUsername(token));
-            }
             ReportDto createdReport = reportService.createReport(report);
             return ResponseEntity.ok(createdReport);
         } catch (Exception e) {

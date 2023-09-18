@@ -24,12 +24,12 @@ public class AuthenticationService {
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
 
-    public AuthenticatedResponse signUpUser(RegisteredRequest request) {
+    public AuthenticatedResponse signupUser(RegisteredRequest request) {
         User user = User.builder()
                 .phoneNumber(request.getPhoneNumber())
                 .username(request.getUsername())
                 .password(passwordEncoder.encode(request.getPassword()))
-                .nickName("کاربر نشان")
+                .nickName("Neshan User")
                 .role(Role.USER)
                 .build();
         userRepository.save(user);
@@ -39,7 +39,7 @@ public class AuthenticationService {
                 .build();
     }
 
-    public AuthenticatedResponse signInUser(AuthenticatedRequest request) {
+    public AuthenticatedResponse loginUser(AuthenticatedRequest request) {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                 request.getUsername(), request.getPassword()));
         User user = userRepository.findByUsername(request.getUsername()).orElseThrow();
