@@ -9,6 +9,7 @@ import com.hammasir.routingreport.repository.AccidentRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -27,9 +28,9 @@ public class AccidentService {
 
     public ReportDto createAccidentReport(ReportDto report) {
         Optional<AccidentReport> desiredReport = accidentRepository.findByLocationAndExpirationTime(
-                report.getLocation(), LocalDateTime.now());
+                report.getLocation());
         if (desiredReport.isEmpty()) {
-            AccidentReport newReport = new AccidentReport();
+            AccidentReport newReport =  new AccidentReport();
             newReport.setApproved(false);
             newReport.setCreationTime(LocalDateTime.now());
             newReport.setDuration(1);
@@ -48,5 +49,10 @@ public class AccidentService {
         } else {
             throw new IllegalArgumentException("This report is already existed!");
         }
+    }
+
+    public List<ReportDto> getActiveAccidentReport(String location) {
+        List<AccidentReport> activeReports = accidentRepository.findActive();
+        return null;
     }
 }

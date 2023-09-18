@@ -6,10 +6,12 @@ import com.hammasir.routingreport.model.dto.ReportDto;
 import com.hammasir.routingreport.model.entity.BugReport;
 import com.hammasir.routingreport.model.enums.Bug;
 import com.hammasir.routingreport.repository.BugRepository;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
 
+@Service
 public class BugService {
 
     private final BugRepository bugRepository;
@@ -25,7 +27,7 @@ public class BugService {
 
     public ReportDto createBugReport(ReportDto report) {
         Optional<BugReport> desiredReport = bugRepository.findByLocationAndExpirationTime(
-                report.getLocation(), LocalDateTime.now());
+                report.getLocation());
         if (desiredReport.isEmpty()) {
             BugReport newReport = new BugReport();
             newReport.setApproved(false);
@@ -46,5 +48,9 @@ public class BugService {
         } else {
             throw new IllegalArgumentException("This report is already existed!");
         }
+    }
+
+    public ReportDto getActiveBugReport(ReportDto report) {
+        return null;
     }
 }

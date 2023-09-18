@@ -6,10 +6,12 @@ import com.hammasir.routingreport.model.dto.ReportDto;
 import com.hammasir.routingreport.model.entity.PlaceReport;
 import com.hammasir.routingreport.model.enums.Place;
 import com.hammasir.routingreport.repository.PlaceRepository;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
 
+@Service
 public class PlaceService {
 
     private final PlaceRepository placeRepository;
@@ -25,7 +27,7 @@ public class PlaceService {
 
     public ReportDto createPlaceReport(ReportDto report) {
         Optional<PlaceReport> desiredReport = placeRepository.findByLocationAndExpirationTime(
-                report.getLocation(), LocalDateTime.now());
+                report.getLocation());
         if (desiredReport.isEmpty()) {
             PlaceReport newReport = new PlaceReport();
             newReport.setApproved(false);
@@ -46,5 +48,9 @@ public class PlaceService {
         } else {
             throw new IllegalArgumentException("This report is already existed!");
         }
+    }
+
+    public ReportDto getActivePlaceReport(ReportDto report) {
+        return null;
     }
 }

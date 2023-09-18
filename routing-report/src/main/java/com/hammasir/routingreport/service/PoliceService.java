@@ -6,10 +6,12 @@ import com.hammasir.routingreport.model.dto.ReportDto;
 import com.hammasir.routingreport.model.entity.PoliceReport;
 import com.hammasir.routingreport.model.enums.Police;
 import com.hammasir.routingreport.repository.PoliceRepository;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
 
+@Service
 public class PoliceService {
 
     private final PoliceRepository policeRepository;
@@ -25,7 +27,7 @@ public class PoliceService {
 
     public ReportDto createPoliceReport(ReportDto report) {
         Optional<PoliceReport> desiredReport = policeRepository.findByLocationAndExpirationTime(
-                report.getLocation(), LocalDateTime.now());
+                report.getLocation());
         if (desiredReport.isEmpty()) {
             PoliceReport newReport = new PoliceReport();
             newReport.setApproved(false);
@@ -46,5 +48,9 @@ public class PoliceService {
         } else {
             throw new IllegalArgumentException("This report is already existed!");
         }
+    }
+
+    public ReportDto getActivePoliceReport(ReportDto report) {
+        return null;
     }
 }

@@ -2,8 +2,11 @@ package com.hammasir.routingreport.controller;
 
 import com.hammasir.routingreport.model.dto.ReportDto;
 import com.hammasir.routingreport.service.ReportService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping(value = "reports")
@@ -16,21 +19,26 @@ public class ReportController {
     }
 
 
-//    @GetMapping
-//    public ResponseEntity<User> create(@RequestBody RestaurantDTO restaurant) {
-//        try {
-//            Restaurant createdRestaurant = restaurantService.createRestaurant(restaurant);
+    @GetMapping(value = "/active")
+    public ResponseEntity<List<ReportDto>> getActive(@RequestBody String location) {
+        try {
+            List<ReportDto> desiredReport = reportService.getActiveReport(location);
 //            if (createdRestaurant == null) {
-//                return ResponseEntity.badRequest().build();
+                return ResponseEntity.badRequest().build();
 //            }
 //            return ResponseEntity.ok(createdRestaurant);
-//        } catch (Exception e) {
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-//        }
-//    }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
 
-    @PostMapping(value = "create")
+    @PostMapping(value = "/create")
     public ResponseEntity<ReportDto> create(@RequestBody ReportDto report) {
-        return ResponseEntity.ok(reportService.createReport(report));
+        try {
+            ReportDto createdReport = reportService.createReport(report);
+            return ResponseEntity.ok(createdReport);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 }

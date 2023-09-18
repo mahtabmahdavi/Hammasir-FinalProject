@@ -6,10 +6,12 @@ import com.hammasir.routingreport.model.dto.ReportDto;
 import com.hammasir.routingreport.model.entity.WeatherReport;
 import com.hammasir.routingreport.model.enums.Weather;
 import com.hammasir.routingreport.repository.WeatherRepository;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
 
+@Service
 public class WeatherService {
 
     private final WeatherRepository weatherRepository;
@@ -25,7 +27,7 @@ public class WeatherService {
 
     public ReportDto createWeatherReport(ReportDto report) {
         Optional<WeatherReport> desiredReport = weatherRepository.findByLocationAndExpirationTime(
-                report.getLocation(), LocalDateTime.now());
+                report.getLocation());
         if (desiredReport.isEmpty()) {
             WeatherReport newReport = new WeatherReport();
             newReport.setApproved(false);
@@ -46,5 +48,9 @@ public class WeatherService {
         } else {
             throw new IllegalArgumentException("This report is already existed!");
         }
+    }
+
+    public ReportDto getActiveWeatherReport(ReportDto report) {
+        return null;
     }
 }

@@ -4,6 +4,8 @@ import com.hammasir.routingreport.component.ReportFactory;
 import com.hammasir.routingreport.model.dto.ReportDto;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class ReportService {
 
@@ -17,4 +19,7 @@ public class ReportService {
         return reportFactory.createReport(reportDto);
     }
 
+    public List<ReportDto> getActiveReport(String location) {
+        return reportFactory.getActiveReport(location);
+    }
 }

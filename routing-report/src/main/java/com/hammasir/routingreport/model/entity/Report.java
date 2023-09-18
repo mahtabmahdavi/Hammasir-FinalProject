@@ -2,6 +2,7 @@ package com.hammasir.routingreport.model.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.locationtech.jts.geom.Geometry;
@@ -9,11 +10,12 @@ import org.locationtech.jts.geom.Geometry;
 import java.time.LocalDateTime;
 
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
-public abstract class Report {
+public class Report {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "report_id")
     @SequenceGenerator(name = "report_id", sequenceName = "report_id_seq", allocationSize = 1)

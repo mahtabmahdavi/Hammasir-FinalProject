@@ -6,10 +6,12 @@ import com.hammasir.routingreport.model.dto.ReportDto;
 import com.hammasir.routingreport.model.entity.CameraReport;
 import com.hammasir.routingreport.model.enums.Camera;
 import com.hammasir.routingreport.repository.CameraRepository;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
 
+@Service
 public class CameraService {
 
     private final CameraRepository cameraRepository;
@@ -25,7 +27,7 @@ public class CameraService {
 
     public ReportDto createCameraReport(ReportDto report) {
         Optional<CameraReport> desiredReport = cameraRepository.findByLocationAndExpirationTime(
-                report.getLocation(), LocalDateTime.now());
+                report.getLocation());
         if (desiredReport.isEmpty()) {
             CameraReport newReport = new CameraReport();
             newReport.setApproved(false);
@@ -46,5 +48,9 @@ public class CameraService {
         } else {
             throw new IllegalArgumentException("This report is already existed!");
         }
+    }
+
+    public ReportDto getActiveCameraReport(ReportDto report) {
+        return null;
     }
 }

@@ -6,10 +6,12 @@ import com.hammasir.routingreport.model.dto.ReportDto;
 import com.hammasir.routingreport.model.entity.EventReport;
 import com.hammasir.routingreport.model.enums.Event;
 import com.hammasir.routingreport.repository.EventRepository;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
 
+@Service
 public class EventService {
 
     private final EventRepository eventRepository;
@@ -25,7 +27,7 @@ public class EventService {
 
     public ReportDto createEventReport(ReportDto report) {
         Optional<EventReport> desiredReport = eventRepository.findByLocationAndExpirationTime(
-                report.getLocation(), LocalDateTime.now());
+                report.getLocation());
         if (desiredReport.isEmpty()) {
             EventReport newReport = new EventReport();
             newReport.setApproved(false);
@@ -46,5 +48,9 @@ public class EventService {
         } else {
             throw new IllegalArgumentException("This report is already existed!");
         }
+    }
+
+    public ReportDto getActiveEventReport(ReportDto report) {
+        return null;
     }
 }

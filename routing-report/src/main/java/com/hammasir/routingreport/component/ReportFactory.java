@@ -4,6 +4,9 @@ import com.hammasir.routingreport.model.dto.ReportDto;
 import com.hammasir.routingreport.service.*;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Component
 public class ReportFactory {
 
@@ -44,5 +47,19 @@ public class ReportFactory {
             case "weather" -> weatherService.createWeatherReport(report);
             default -> throw new IllegalArgumentException("Type of the report is NOT valid!");
         };
+    }
+
+    public List<ReportDto> getActiveReport(String location) {
+        List<ReportDto> activeReports = new ArrayList<>();
+        activeReports.addAll(accidentService.getActiveAccidentReport(location));
+//        activeReports.addAll(bugService.getActiveBugReport(location));
+//        activeReports.addAll(bumpService.getActiveBumpReport(location));
+//        activeReports.addAll(cameraService.getActiveCameraReport(location));
+//        activeReports.addAll(eventService.getActiveEventReport(location));
+//        activeReports.addAll(placeService.getActivePlaceReport(location));
+//        activeReports.addAll(policeService.getActivePoliceReport(location));
+//        activeReports.addAll(trafficService.getActiveTrafficReport(location));
+//        activeReports.addAll(weatherService.getActiveWeatherReport(location));
+        return activeReports;
     }
 }

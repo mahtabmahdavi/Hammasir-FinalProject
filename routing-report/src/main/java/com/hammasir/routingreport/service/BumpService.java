@@ -5,10 +5,12 @@ import com.hammasir.routingreport.component.UserFactory;
 import com.hammasir.routingreport.model.dto.ReportDto;
 import com.hammasir.routingreport.model.entity.BumpReport;
 import com.hammasir.routingreport.repository.BumpRepository;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
 
+@Service
 public class BumpService {
 
     private final BumpRepository bumpRepository;
@@ -24,7 +26,7 @@ public class BumpService {
 
     public ReportDto createBumpReport(ReportDto report) {
         Optional<BumpReport> desiredReport = bumpRepository.findByLocationAndExpirationTime(
-                report.getLocation(), LocalDateTime.now());
+                report.getLocation());
         if (desiredReport.isEmpty()) {
             BumpReport newReport = new BumpReport();
             newReport.setApproved(false);
@@ -44,5 +46,9 @@ public class BumpService {
         } else {
             throw new IllegalArgumentException("This report is already existed!");
         }
+    }
+
+    public ReportDto getActiveBumpReport(ReportDto report) {
+        return null;
     }
 }
