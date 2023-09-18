@@ -1,7 +1,6 @@
 package com.hammasir.routingreport.service;
 
 import com.hammasir.routingreport.component.GeometryFactory;
-import com.hammasir.routingreport.component.UserFactory;
 import com.hammasir.routingreport.model.dto.ReportDto;
 import com.hammasir.routingreport.model.entity.BumpReport;
 import com.hammasir.routingreport.repository.BumpRepository;
@@ -15,13 +14,13 @@ public class BumpService {
 
     private final BumpRepository bumpRepository;
     private final GeometryFactory geometryFactory;
-    private final UserFactory userFactory;
+    private final AuthenticationService authService;
 
     public BumpService(BumpRepository bumpRepository, GeometryFactory geometryFactory,
-                       UserFactory userFactory) {
+                       AuthenticationService authService) {
         this.bumpRepository = bumpRepository;
         this.geometryFactory = geometryFactory;
-        this.userFactory = userFactory;
+        this.authService = authService;
     }
 
     public ReportDto createBumpReport(ReportDto report) {
@@ -35,7 +34,7 @@ public class BumpService {
             newReport.setExpirationTime(LocalDateTime.now().plusYears(newReport.getDuration()));
             newReport.setType(report.getType());
             newReport.setLocation(geometryFactory.createGeometry(report));
-            newReport.setUser(userFactory.findUser(report));
+            newReport.setUser(authService.findUser(report));
             bumpRepository.save(newReport);
             return ReportDto.builder()
                     .category(null)

@@ -1,7 +1,6 @@
 package com.hammasir.routingreport.service;
 
 import com.hammasir.routingreport.component.GeometryFactory;
-import com.hammasir.routingreport.component.UserFactory;
 import com.hammasir.routingreport.model.dto.ReportDto;
 import com.hammasir.routingreport.model.entity.PoliceReport;
 import com.hammasir.routingreport.model.enums.Police;
@@ -16,13 +15,13 @@ public class PoliceService {
 
     private final PoliceRepository policeRepository;
     private final GeometryFactory geometryFactory;
-    private final UserFactory userFactory;
+    private final AuthenticationService authService;
 
     public PoliceService(PoliceRepository policeRepository, GeometryFactory geometryFactory,
-                         UserFactory userFactory) {
+                         AuthenticationService authService) {
         this.policeRepository = policeRepository;
         this.geometryFactory = geometryFactory;
-        this.userFactory = userFactory;
+        this.authService = authService;
     }
 
     public ReportDto createPoliceReport(ReportDto report) {
@@ -36,7 +35,7 @@ public class PoliceService {
             newReport.setExpirationTime(LocalDateTime.now().plusHours(newReport.getDuration()));
             newReport.setType(report.getType());
             newReport.setLocation(geometryFactory.createGeometry(report));
-            newReport.setUser(userFactory.findUser(report));
+            newReport.setUser(authService.findUser(report));
             newReport.setCategory(Police.fromValue(report.getCategory()));
             policeRepository.save(newReport);
             return ReportDto.builder()

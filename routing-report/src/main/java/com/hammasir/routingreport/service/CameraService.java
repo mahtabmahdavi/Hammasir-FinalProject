@@ -1,11 +1,11 @@
 package com.hammasir.routingreport.service;
 
 import com.hammasir.routingreport.component.GeometryFactory;
-import com.hammasir.routingreport.component.UserFactory;
 import com.hammasir.routingreport.model.dto.ReportDto;
 import com.hammasir.routingreport.model.entity.CameraReport;
 import com.hammasir.routingreport.model.enums.Camera;
 import com.hammasir.routingreport.repository.CameraRepository;
+import com.hammasir.routingreport.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -16,13 +16,13 @@ public class CameraService {
 
     private final CameraRepository cameraRepository;
     private final GeometryFactory geometryFactory;
-    private final UserFactory userFactory;
+    private final AuthenticationService authService;
 
     public CameraService(CameraRepository cameraRepository, GeometryFactory geometryFactory,
-                         UserFactory userFactory) {
+                         AuthenticationService authService) {
         this.cameraRepository = cameraRepository;
         this.geometryFactory = geometryFactory;
-        this.userFactory = userFactory;
+        this.authService = authService;
     }
 
     public ReportDto createCameraReport(ReportDto report) {
@@ -36,7 +36,7 @@ public class CameraService {
             newReport.setExpirationTime(LocalDateTime.now().plusYears(newReport.getDuration()));
             newReport.setType(report.getType());
             newReport.setLocation(geometryFactory.createGeometry(report));
-            newReport.setUser(userFactory.findUser(report));
+            newReport.setUser(authService.findUser(report));
             newReport.setCategory(Camera.fromValue(report.getCategory()));
             cameraRepository.save(newReport);
             return ReportDto.builder()

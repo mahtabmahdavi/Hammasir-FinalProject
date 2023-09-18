@@ -1,6 +1,7 @@
 package com.hammasir.routingreport.component;
 
 import com.hammasir.routingreport.model.dto.ReportDto;
+import com.hammasir.routingreport.repository.UserRepository;
 import com.hammasir.routingreport.service.*;
 import org.springframework.stereotype.Component;
 
@@ -8,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component
-public class ReportFactory {
+public class ApplicationHandler {
 
     private final AccidentService accidentService;
     private final BugService bugService;
@@ -19,10 +20,12 @@ public class ReportFactory {
     private final PoliceService policeService;
     private final TrafficService trafficService;
     private final WeatherService weatherService;
+    private final UserRepository userRepository;
 
-    public ReportFactory(AccidentService accidentService, BugService bugService, BumpService bumpService,
-                         CameraService cameraService, EventService eventService, PlaceService placeService,
-                         PoliceService policeService, TrafficService trafficService, WeatherService weatherService) {
+    public ApplicationHandler(AccidentService accidentService, BugService bugService, BumpService bumpService,
+                              CameraService cameraService, EventService eventService, PlaceService placeService,
+                              PoliceService policeService, TrafficService trafficService, WeatherService weatherService,
+                              UserRepository userRepository) {
         this.accidentService = accidentService;
         this.bugService = bugService;
         this.bumpService = bumpService;
@@ -32,6 +35,7 @@ public class ReportFactory {
         this.policeService = policeService;
         this.trafficService = trafficService;
         this.weatherService = weatherService;
+        this.userRepository = userRepository;
     }
 
     public ReportDto createReport(ReportDto report) {

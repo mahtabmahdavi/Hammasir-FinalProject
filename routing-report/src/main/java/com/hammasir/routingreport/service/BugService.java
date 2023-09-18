@@ -1,7 +1,6 @@
 package com.hammasir.routingreport.service;
 
 import com.hammasir.routingreport.component.GeometryFactory;
-import com.hammasir.routingreport.component.UserFactory;
 import com.hammasir.routingreport.model.dto.ReportDto;
 import com.hammasir.routingreport.model.entity.BugReport;
 import com.hammasir.routingreport.model.enums.Bug;
@@ -16,13 +15,13 @@ public class BugService {
 
     private final BugRepository bugRepository;
     private final GeometryFactory geometryFactory;
-    private final UserFactory userFactory;
+    private final AuthenticationService authService;
 
     public BugService(BugRepository bugRepository, GeometryFactory geometryFactory,
-                      UserFactory userFactory) {
+                      AuthenticationService authService) {
         this.bugRepository = bugRepository;
         this.geometryFactory = geometryFactory;
-        this.userFactory = userFactory;
+        this.authService = authService;
     }
 
     public ReportDto createBugReport(ReportDto report) {
@@ -36,7 +35,7 @@ public class BugService {
             newReport.setExpirationTime(LocalDateTime.now().plusMonths(newReport.getDuration()));
             newReport.setType(report.getType());
             newReport.setLocation(geometryFactory.createGeometry(report));
-            newReport.setUser(userFactory.findUser(report));
+            newReport.setUser(authService.findUser(report));
             newReport.setCategory(Bug.fromValue(report.getCategory()));
             bugRepository.save(newReport);
             return ReportDto.builder()

@@ -1,7 +1,6 @@
 package com.hammasir.routingreport.service;
 
 import com.hammasir.routingreport.component.GeometryFactory;
-import com.hammasir.routingreport.component.UserFactory;
 import com.hammasir.routingreport.model.dto.ReportDto;
 import com.hammasir.routingreport.model.entity.AccidentReport;
 import com.hammasir.routingreport.model.enums.Accident;
@@ -17,13 +16,13 @@ public class AccidentService {
 
     private final AccidentRepository accidentRepository;
     private final GeometryFactory geometryFactory;
-    private final UserFactory userFactory;
+    private final AuthenticationService authService;
 
     public AccidentService(AccidentRepository accidentRepository, GeometryFactory geometryFactory,
-                           UserFactory userFactory) {
+                           AuthenticationService authService) {
         this.accidentRepository = accidentRepository;
         this.geometryFactory = geometryFactory;
-        this.userFactory = userFactory;
+        this.authService = authService;
     }
 
     public ReportDto createAccidentReport(ReportDto report) {
@@ -37,7 +36,7 @@ public class AccidentService {
             newReport.setExpirationTime(LocalDateTime.now().plusHours(newReport.getDuration()));
             newReport.setType(report.getType());
             newReport.setLocation(geometryFactory.createGeometry(report));
-            newReport.setUser(userFactory.findUser(report));
+            newReport.setUser(authService.findUser(report));
             newReport.setCategory(Accident.fromValue(report.getCategory()));
             accidentRepository.save(newReport);
             return ReportDto.builder()
@@ -52,7 +51,7 @@ public class AccidentService {
     }
 
     public List<ReportDto> getActiveAccidentReport(String location) {
-        List<AccidentReport> activeReports = accidentRepository.findActive();
+//        List<AccidentReport> activeReports = accidentRepository.findActive(geometryFactory.createGeometry(location));
         return null;
     }
 }

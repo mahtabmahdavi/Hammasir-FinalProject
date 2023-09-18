@@ -1,7 +1,6 @@
 package com.hammasir.routingreport.service;
 
 import com.hammasir.routingreport.component.GeometryFactory;
-import com.hammasir.routingreport.component.UserFactory;
 import com.hammasir.routingreport.model.dto.ReportDto;
 import com.hammasir.routingreport.model.entity.WeatherReport;
 import com.hammasir.routingreport.model.enums.Weather;
@@ -16,13 +15,13 @@ public class WeatherService {
 
     private final WeatherRepository weatherRepository;
     private final GeometryFactory geometryFactory;
-    private final UserFactory userFactory;
+    private final AuthenticationService authService;
 
     public WeatherService(WeatherRepository weatherRepository, GeometryFactory geometryFactory,
-                          UserFactory userFactory) {
+                          AuthenticationService authService) {
         this.weatherRepository = weatherRepository;
         this.geometryFactory = geometryFactory;
-        this.userFactory = userFactory;
+        this.authService = authService;
     }
 
     public ReportDto createWeatherReport(ReportDto report) {
@@ -36,7 +35,7 @@ public class WeatherService {
             newReport.setExpirationTime(LocalDateTime.now().plusHours(newReport.getDuration()));
             newReport.setType(report.getType());
             newReport.setLocation(geometryFactory.createGeometry(report));
-            newReport.setUser(userFactory.findUser(report));
+            newReport.setUser(authService.findUser(report));
             newReport.setCategory(Weather.fromValue(report.getCategory()));
             weatherRepository.save(newReport);
             return ReportDto.builder()

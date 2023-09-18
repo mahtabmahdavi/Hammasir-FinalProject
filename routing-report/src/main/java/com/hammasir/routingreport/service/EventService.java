@@ -1,7 +1,6 @@
 package com.hammasir.routingreport.service;
 
 import com.hammasir.routingreport.component.GeometryFactory;
-import com.hammasir.routingreport.component.UserFactory;
 import com.hammasir.routingreport.model.dto.ReportDto;
 import com.hammasir.routingreport.model.entity.EventReport;
 import com.hammasir.routingreport.model.enums.Event;
@@ -16,13 +15,13 @@ public class EventService {
 
     private final EventRepository eventRepository;
     private final GeometryFactory geometryFactory;
-    private final UserFactory userFactory;
+    private final AuthenticationService authService;
 
     public EventService(EventRepository eventRepository, GeometryFactory geometryFactory,
-                        UserFactory userFactory) {
+                        AuthenticationService authService) {
         this.eventRepository = eventRepository;
         this.geometryFactory = geometryFactory;
-        this.userFactory = userFactory;
+        this.authService = authService;
     }
 
     public ReportDto createEventReport(ReportDto report) {
@@ -36,7 +35,7 @@ public class EventService {
             newReport.setExpirationTime(LocalDateTime.now().plusDays(newReport.getDuration()));
             newReport.setType(report.getType());
             newReport.setLocation(geometryFactory.createGeometry(report));
-            newReport.setUser(userFactory.findUser(report));
+            newReport.setUser(authService.findUser(report));
             newReport.setCategory(Event.fromValue(report.getCategory()));
             eventRepository.save(newReport);
             return ReportDto.builder()

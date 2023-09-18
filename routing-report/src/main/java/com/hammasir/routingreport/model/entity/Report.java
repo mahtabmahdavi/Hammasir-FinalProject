@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 import org.locationtech.jts.geom.Geometry;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Data
 @Builder

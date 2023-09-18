@@ -1,6 +1,6 @@
 package com.hammasir.routingreport.service;
 
-import com.hammasir.routingreport.component.ReportFactory;
+import com.hammasir.routingreport.component.ApplicationHandler;
 import com.hammasir.routingreport.model.dto.ReportDto;
 import org.springframework.stereotype.Service;
 
@@ -9,17 +9,17 @@ import java.util.List;
 @Service
 public class ReportService {
 
-    private final ReportFactory reportFactory;
+    private final ApplicationHandler handler;
 
-    public ReportService(ReportFactory reportFactory) {
-        this.reportFactory = reportFactory;
+    public ReportService(ApplicationHandler handler) {
+        this.handler = handler;
     }
 
     public ReportDto createReport(ReportDto reportDto) {
-        return reportFactory.createReport(reportDto);
+        return handler.createReport(reportDto);
     }
 
     public List<ReportDto> getActiveReport(String location) {
-        return reportFactory.getActiveReport(location);
+        return handler.getActiveReport(location);
     }
 }
