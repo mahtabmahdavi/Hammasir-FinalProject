@@ -1,6 +1,7 @@
 package com.hammasir.routingreport.repository;
 
 import com.hammasir.routingreport.model.entity.AccidentReport;
+import org.locationtech.jts.geom.Geometry;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -18,7 +19,5 @@ public interface AccidentRepository extends JpaRepository<AccidentReport, Long> 
 
     @Query("SELECT ar FROM AccidentReport ar WHERE ST_Intersects(ar.location, ST_Buffer(:location, 10 * 0.00001)) = true " +
             "AND ar.expirationTime > CURRENT_TIMESTAMP")
-    List<AccidentReport> findActive();
-//    @Query("SELECT ar FROM AccidentReport ar WHERE ar.user = :user")
-//    List<AccidentReport> findByUser(@Param("user") User user);
+    List<AccidentReport> findActive(@Param("location") Geometry location);
 }

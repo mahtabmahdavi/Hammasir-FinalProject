@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import org.locationtech.jts.geom.Geometry;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @Builder
@@ -43,4 +44,6 @@ public class Report {
     @ManyToOne(targetEntity = User.class, fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
+
+
 }
