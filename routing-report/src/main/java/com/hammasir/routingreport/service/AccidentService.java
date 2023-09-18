@@ -1,50 +1,42 @@
 package com.hammasir.routingreport.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hammasir.routingreport.component.GeometryFactory;
 import com.hammasir.routingreport.model.dto.ReportDto;
 import com.hammasir.routingreport.model.entity.AccidentReport;
 import com.hammasir.routingreport.model.enums.Accident;
 import com.hammasir.routingreport.repository.AccidentRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class AccidentService {
 
     private final AccidentRepository accidentRepository;
+    private final AuthenticationService authenticationService;
     private final GeometryFactory geometryFactory;
-    private final AuthenticationService authService;
-
-    public AccidentService(AccidentRepository accidentRepository, GeometryFactory geometryFactory,
-                           AuthenticationService authService) {
-        this.accidentRepository = accidentRepository;
-        this.geometryFactory = geometryFactory;
-        this.authService = authService;
-    }
+    private final ObjectMapper objectMapper;
 
     public ReportDto createAccidentReport(ReportDto report) {
-        Optional<AccidentReport> desiredReport = accidentRepository.findByLocationAndExpirationTime(
-                report.getLocation());
-        if (desiredReport.isEmpty()) {
+        boolean isExisted = accidentRepository.existsByLocationAndExpirationTime(report.getLocation());
+        if (!isExisted) {
             AccidentReport newReport =  new AccidentReport();
-            newReport.setApproved(false);
-            newReport.setCreationTime(LocalDateTime.now());
-            newReport.setDuration(1);
-            newReport.setExpirationTime(LocalDateTime.now().plusHours(newReport.getDuration()));
             newReport.setType(report.getType());
+            newReport.setIsApproved(true);
+            newReport.setLikeCounter(0);
+            newReport.setDuration(1);
+            newReport.setCreationTime(LocalDateTime.now());
+            newReport.setExpirationTime(LocalDateTime.now().plusHours(newReport.getDuration()));
             newReport.setLocation(geometryFactory.createGeometry(report));
-            newReport.setUser(authService.findUser(report));
             newReport.setCategory(Accident.fromValue(report.getCategory()));
+            newReport.setContributors(List.of());
+            newReport.setUser(authenticationService.findUser(report.getUsername()));
             accidentRepository.save(newReport);
-            return ReportDto.builder()
-                    .category(newReport.getCategory().name())
-                    .location(geometryFactory.createWkt(newReport.getLocation()))
-                    .type(newReport.getType())
-                    .userId(newReport.getUser().getId())
-                    .build();
+            return objectMapper.convertValue(newReport, ReportDto.class);
         } else {
             throw new IllegalArgumentException("This report is already existed!");
         }

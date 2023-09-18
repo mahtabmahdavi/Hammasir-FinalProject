@@ -1,8 +1,10 @@
 package com.hammasir.routingreport.model.enums;
 
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 @Getter
+@RequiredArgsConstructor
 public enum Police {
 
     POLICE("POLICE"),
@@ -10,10 +12,6 @@ public enum Police {
     OPPOSITE_LINE("OPPOSITE_LINE");
 
     private final String value;
-
-    Police(String value) {
-        this.value = value;
-    }
 
     public static Police fromValue(String value) {
         for (Police category : Police.values()) {

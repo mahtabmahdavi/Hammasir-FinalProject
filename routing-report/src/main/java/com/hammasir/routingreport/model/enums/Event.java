@@ -1,8 +1,10 @@
 package com.hammasir.routingreport.model.enums;
 
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 @Getter
+@RequiredArgsConstructor
 public enum Event {
 
     HOLE("HOLE"),
@@ -10,10 +12,6 @@ public enum Event {
     CONSTRUCTION_OPERATION("CONSTRUCTION_OPERATION");
 
     private final String value;
-
-    Event(String value) {
-        this.value = value;
-    }
 
     public static Event fromValue(String value) {
         for (Event category : Event.values()) {

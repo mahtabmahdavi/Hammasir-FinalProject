@@ -1,8 +1,10 @@
 package com.hammasir.routingreport.model.enums;
 
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 @Getter
+@RequiredArgsConstructor
 public enum Place {
 
     POLICE("POLICE"),
@@ -13,10 +15,6 @@ public enum Place {
     WELFARE_SERVICE("WELFARE_SERVICE");
 
     private final String value;
-
-    Place(String value) {
-        this.value = value;
-    }
 
     public static Place fromValue(String value) {
         for (Place category : Place.values()) {

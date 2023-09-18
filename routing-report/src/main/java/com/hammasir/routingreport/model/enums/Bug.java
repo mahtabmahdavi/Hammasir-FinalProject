@@ -1,8 +1,10 @@
 package com.hammasir.routingreport.model.enums;
 
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 @Getter
+@RequiredArgsConstructor
 public enum Bug {
 
     NO_ENTRY("NO_ENTRY"),
@@ -13,10 +15,6 @@ public enum Bug {
     OTHER("OTHER");
 
     private final String value;
-
-    Bug(String value) {
-        this.value = value;
-    }
 
     public static Bug fromValue(String value) {
         for (Bug category : Bug.values()) {

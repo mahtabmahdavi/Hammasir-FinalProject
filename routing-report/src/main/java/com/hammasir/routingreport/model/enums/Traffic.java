@@ -1,8 +1,10 @@
 package com.hammasir.routingreport.model.enums;
 
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 @Getter
+@RequiredArgsConstructor
 public enum Traffic {
 
     JAM("JAM"),
@@ -10,10 +12,6 @@ public enum Traffic {
     SEMI_HEAVY("SEMI_HEAVY");
 
     private final String value;
-
-    Traffic(String value) {
-        this.value = value;
-    }
 
     public static Traffic fromValue(String value) {
         for (Traffic category : Traffic.values()) {

@@ -1,7 +1,10 @@
 package com.hammasir.routingreport.controller;
 
+import com.hammasir.routingreport.authentication.JwtService;
 import com.hammasir.routingreport.model.dto.ReportDto;
 import com.hammasir.routingreport.service.ReportService;
+import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -10,14 +13,11 @@ import java.util.List;
 
 @RestController
 @RequestMapping(value = "reports")
+@RequiredArgsConstructor
 public class ReportController {
 
     private final ReportService reportService;
-
-    public ReportController(ReportService reportService) {
-        this.reportService = reportService;
-    }
-
+    private final JwtService jwtService;
 
     @GetMapping(value = "/active")
     public ResponseEntity<List<ReportDto>> getActive(@RequestBody String location) {
@@ -33,8 +33,13 @@ public class ReportController {
     }
 
     @PostMapping(value = "/create")
-    public ResponseEntity<ReportDto> create(@RequestBody ReportDto report) {
+    public ResponseEntity<ReportDto> create(HttpServletRequest request, @RequestBody ReportDto report) {
         try {
+            String jwtToken = request.getHeader("Authorization");
+            if (jwtToken != null && jwtToken.startsWith("Bearer ")) {
+                String token = jwtToken.substring(7);
+                report.setUsername(jwtService.extractUsername(token));
+            }
             ReportDto createdReport = reportService.createReport(report);
             return ResponseEntity.ok(createdReport);
         } catch (Exception e) {

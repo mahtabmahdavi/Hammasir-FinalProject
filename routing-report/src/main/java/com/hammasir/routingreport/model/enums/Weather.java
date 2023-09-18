@@ -1,8 +1,10 @@
 package com.hammasir.routingreport.model.enums;
 
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 @Getter
+@RequiredArgsConstructor
 public enum Weather {
 
     FOG("FOG"),
@@ -10,10 +12,6 @@ public enum Weather {
     SLIP_ROAD("SLIP_ROAD");
 
     private final String value;
-
-    Weather(String value) {
-        this.value = value;
-    }
 
     public static Weather fromValue(String value) {
         for (Weather category : Weather.values()) {

@@ -2,7 +2,6 @@ package com.hammasir.routingreport.model.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.locationtech.jts.geom.Geometry;
@@ -11,7 +10,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -26,8 +24,8 @@ public class Report {
     @Column(name = "report_type", nullable = false)
     private String type;
 
-    @Column(name = "approved")
-    private Boolean approved;
+    @Column(name = "is_approved")
+    private Boolean isApproved;
 
     @Column(name = "like_counter")
     private int likeCounter;

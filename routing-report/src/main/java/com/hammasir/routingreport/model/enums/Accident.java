@@ -1,8 +1,10 @@
 package com.hammasir.routingreport.model.enums;
 
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 @Getter
+@RequiredArgsConstructor
 public enum Accident {
 
     LIGHT("LIGHT"),
@@ -10,10 +12,6 @@ public enum Accident {
     OPPOSITE_LINE("OPPOSITE_LINE");
 
     private final String value;
-
-    Accident(String value) {
-        this.value = value;
-    }
 
     public static Accident fromValue(String value) {
         for (Accident category : Accident.values()) {

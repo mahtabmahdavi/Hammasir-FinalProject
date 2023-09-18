@@ -4,7 +4,6 @@ import com.hammasir.routingreport.model.auth.AuthenticatedRequest;
 import com.hammasir.routingreport.model.auth.AuthenticatedResponse;
 import com.hammasir.routingreport.model.auth.RegisteredRequest;
 import com.hammasir.routingreport.authentication.JwtService;
-import com.hammasir.routingreport.model.dto.ReportDto;
 import com.hammasir.routingreport.model.enums.Role;
 import com.hammasir.routingreport.model.entity.User;
 import com.hammasir.routingreport.repository.UserRepository;
@@ -50,10 +49,10 @@ public class AuthenticationService {
                 .build();
     }
 
-    public User findUser(ReportDto report) {
-        Optional<User> user = userRepository.findById(report.getUserId());
-        if (user.isPresent()) {
-            return user.get();
+    public User findUser(String username) {
+        Optional<User> desiredUser = userRepository.findByUsername(username);
+        if (desiredUser.isPresent()) {
+            return desiredUser.get();
         } else {
             throw new IllegalArgumentException("User is NOT found!");
         }

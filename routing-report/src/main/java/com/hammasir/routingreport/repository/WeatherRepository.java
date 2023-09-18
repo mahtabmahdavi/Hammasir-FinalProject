@@ -6,12 +6,15 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.util.Optional;
-
 @Repository
 public interface WeatherRepository extends JpaRepository<WeatherReport, Long> {
 
-    @Query("SELECT wr FROM WeatherReport wr WHERE ST_Equals(wr.location, ST_GeomFromText(:location)) " +
+    @Query("SELECT CASE WHEN COUNT(wr) > 0 THEN true ELSE false END " +
+            "FROM WeatherReport wr WHERE ST_Equals(wr.location, ST_GeomFromText(:location)) " +
             "AND wr.expirationTime > CURRENT_TIMESTAMP")
-    Optional<WeatherReport> findByLocationAndExpirationTime(@Param("location") String location);
+    boolean existsByLocationAndExpirationTime(@Param("location") String location);
+
+//    @Query("SELECT wr FROM WeatherReport wr WHERE ST_Equals(wr.location, ST_GeomFromText(:location)) " +
+//            "AND wr.expirationTime > CURRENT_TIMESTAMP")
+//    Optional<WeatherReport> findByLocationAndExpirationTime(@Param("location") String location);
 }

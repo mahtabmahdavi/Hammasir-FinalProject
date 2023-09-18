@@ -6,12 +6,15 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.util.Optional;
-
 @Repository
 public interface BugRepository extends JpaRepository<BugReport, Long> {
 
-    @Query("SELECT br FROM BugReport br WHERE ST_Equals(br.location, ST_GeomFromText(:location)) " +
+    @Query("SELECT CASE WHEN COUNT(br) > 0 THEN true ELSE false END " +
+            "FROM BugReport br WHERE ST_Equals(br.location, ST_GeomFromText(:location)) " +
             "AND br.expirationTime > CURRENT_TIMESTAMP")
-    Optional<BugReport> findByLocationAndExpirationTime(@Param("location") String location);
+    boolean existsByLocationAndExpirationTime(@Param("location") String location);
+
+//    @Query("SELECT br FROM BugReport br WHERE ST_Equals(br.location, ST_GeomFromText(:location)) " +
+//            "AND br.expirationTime > CURRENT_TIMESTAMP")
+//    Optional<BugReport> findByLocationAndExpirationTime(@Param("location") String location);
 }
