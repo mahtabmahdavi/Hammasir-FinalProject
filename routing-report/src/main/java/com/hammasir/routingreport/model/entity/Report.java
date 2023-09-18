@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import org.locationtech.jts.geom.Geometry;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @Builder
@@ -28,7 +29,10 @@ public class Report {
     @Column(name = "approved")
     private Boolean approved;
 
-    @Column(name = "duration", nullable = false)
+    @Column(name = "like_counter")
+    private int likeCounter;
+
+    @Transient
     private Integer duration;
 
     @Column(name = "creation_time", nullable = false)
@@ -40,9 +44,12 @@ public class Report {
     @Column(name = "location", columnDefinition = "geometry(Point, 4326)", nullable = false)
     private Geometry location;
 
+    @ElementCollection
+    @CollectionTable(name = "report_contributors", joinColumns = @JoinColumn(name = "report_id"))
+    @Column(name = "contributor")
+    private List<Long> contributors;
+
     @ManyToOne(targetEntity = User.class, fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
-
-
 }
