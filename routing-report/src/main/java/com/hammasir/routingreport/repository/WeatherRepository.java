@@ -17,14 +17,9 @@ public interface WeatherRepository extends JpaRepository<WeatherReport, Long> {
             "AND wr.expirationTime > CURRENT_TIMESTAMP")
     boolean existsByLocationAndExpirationTime(@Param("location") String location);
 
-//    @Query("SELECT wr FROM WeatherReport wr WHERE ST_Equals(wr.location, ST_GeomFromText(:location)) " +
-//            "AND wr.expirationTime > CURRENT_TIMESTAMP")
-//    Optional<WeatherReport> findByLocationAndExpirationTime(@Param("location") String location);
-
     @Query("SELECT wr FROM WeatherReport wr " +
             "WHERE ST_DWithin(ST_Transform(wr.location, 3857), ST_Transform(:location, 3857), 10) = true " +
             "AND wr.expirationTime > CURRENT_TIMESTAMP " +
             "AND wr.isApproved = true")
-    List<WeatherReport> findByIsApprovedAndLocation(@Param("location") Geometry location);
-
+    List<WeatherReport> findByLocationAndExpirationTimeAndIsApproved(@Param("location") Geometry location);
 }

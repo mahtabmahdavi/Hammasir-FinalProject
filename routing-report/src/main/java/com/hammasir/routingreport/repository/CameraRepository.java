@@ -24,6 +24,6 @@ public interface CameraRepository extends JpaRepository<CameraReport, Long> {
             "WHERE ST_DWithin(ST_Transform(cr.location, 3857), ST_Transform(:location, 3857), 10) = true " +
             "AND cr.expirationTime > CURRENT_TIMESTAMP " +
             "AND cr.isApproved = true")
-    List<CameraReport> findByIsApprovedAndLocation(@Param("location") Geometry location);
+    List<CameraReport> findByLocationAndExpirationTimeAndIsApproved(@Param("location") Geometry location);
 
 }

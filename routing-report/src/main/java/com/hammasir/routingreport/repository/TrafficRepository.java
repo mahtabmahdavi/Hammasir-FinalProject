@@ -21,5 +21,5 @@ public interface TrafficRepository extends JpaRepository<TrafficReport, Long> {
             "WHERE ST_DWithin(ST_Transform(tr.location, 3857), ST_Transform(:location, 3857), 10) = true " +
             "AND tr.expirationTime > CURRENT_TIMESTAMP " +
             "AND tr.isApproved = true")
-    List<TrafficReport> findByIsApprovedAndLocation(@Param("location") Geometry location);
+    List<TrafficReport> findByLocationAndExpirationTimeAndIsApproved(@Param("location") Geometry location);
 }

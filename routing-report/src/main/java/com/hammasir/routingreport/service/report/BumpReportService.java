@@ -57,7 +57,7 @@ public class BumpReportService implements ReportService {
 
     @Override
     public List<ReportDTO> getActiveReports(String location) {
-        List<BumpReport> activeReports = bumpRepository.findByIsApprovedAndLocation(geometryHandler.createGeometry(location));
+        List<BumpReport> activeReports = bumpRepository.findByLocationAndExpirationTimeAndIsApproved(geometryHandler.createGeometry(location));
         return activeReports.stream()
                 .map(this::convertToReportDto)
                 .collect(Collectors.toList());

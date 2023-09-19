@@ -58,7 +58,7 @@ public class TrafficReportService implements ReportService {
 
     @Override
     public List<ReportDTO> getActiveReports(String location) {
-        List<TrafficReport> activeReports = trafficRepository.findByIsApprovedAndLocation(geometryHandler.createGeometry(location));
+        List<TrafficReport> activeReports = trafficRepository.findByLocationAndExpirationTimeAndIsApproved(geometryHandler.createGeometry(location));
         return activeReports.stream()
                 .map(this::convertToReportDto)
                 .collect(Collectors.toList());

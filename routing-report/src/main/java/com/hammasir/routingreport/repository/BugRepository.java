@@ -24,5 +24,5 @@ public interface BugRepository extends JpaRepository<BugReport, Long> {
             "WHERE ST_DWithin(ST_Transform(br.location, 3857), ST_Transform(:location, 3857), 10) = true " +
             "AND br.expirationTime > CURRENT_TIMESTAMP " +
             "AND br.isApproved = true")
-    List<BugReport> findByIsApprovedAndLocation(@Param("location") Geometry location);
+    List<BugReport> findByLocationAndExpirationTimeAndIsApproved(@Param("location") Geometry location);
 }

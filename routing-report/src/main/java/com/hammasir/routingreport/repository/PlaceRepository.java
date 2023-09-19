@@ -24,5 +24,5 @@ public interface PlaceRepository extends JpaRepository<PlaceReport, Long> {
             "WHERE ST_DWithin(ST_Transform(pr.location, 3857), ST_Transform(:location, 3857), 10) = true " +
             "AND pr.expirationTime > CURRENT_TIMESTAMP " +
             "AND pr.isApproved = true")
-    List<PlaceReport> findByIsApprovedAndLocation(@Param("location") Geometry location);
+    List<PlaceReport> findByLocationAndExpirationTimeAndIsApproved(@Param("location") Geometry location);
 }

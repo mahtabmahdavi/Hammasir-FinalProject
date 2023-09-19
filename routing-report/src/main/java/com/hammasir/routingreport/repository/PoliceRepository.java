@@ -1,6 +1,5 @@
 package com.hammasir.routingreport.repository;
 
-import com.hammasir.routingreport.model.entity.AccidentReport;
 import com.hammasir.routingreport.model.entity.PoliceReport;
 import org.locationtech.jts.geom.Geometry;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -22,5 +21,5 @@ public interface PoliceRepository extends JpaRepository<PoliceReport, Long> {
             "WHERE ST_DWithin(ST_Transform(pr.location, 3857), ST_Transform(:location, 3857), 10) = true " +
             "AND pr.expirationTime > CURRENT_TIMESTAMP " +
             "AND pr.isApproved = true")
-    List<PoliceReport> findByIsApprovedAndLocation(@Param("location") Geometry location);
+    List<PoliceReport> findByLocationAndExpirationTimeAndIsApproved(@Param("location") Geometry location);
 }

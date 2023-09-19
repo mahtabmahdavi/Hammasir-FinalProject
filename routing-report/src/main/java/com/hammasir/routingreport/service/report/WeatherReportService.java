@@ -3,7 +3,6 @@ package com.hammasir.routingreport.service.report;
 import com.hammasir.routingreport.component.GeometryHandler;
 import com.hammasir.routingreport.model.DTO.ChangeDTO;
 import com.hammasir.routingreport.model.DTO.ReportDTO;
-import com.hammasir.routingreport.model.entity.AccidentReport;
 import com.hammasir.routingreport.model.entity.User;
 import com.hammasir.routingreport.model.entity.WeatherReport;
 import com.hammasir.routingreport.model.enumuration.Weather;
@@ -59,7 +58,7 @@ public class WeatherReportService implements ReportService {
 
     @Override
     public List<ReportDTO> getActiveReports(String location) {
-        List<WeatherReport> activeReports = weatherRepository.findByIsApprovedAndLocation(geometryHandler.createGeometry(location));
+        List<WeatherReport> activeReports = weatherRepository.findByLocationAndExpirationTimeAndIsApproved(geometryHandler.createGeometry(location));
         return activeReports.stream()
                 .map(this::convertToReportDto)
                 .collect(Collectors.toList());

@@ -59,7 +59,7 @@ public class BugReportService implements ReportService {
 
     @Override
     public List<ReportDTO> getActiveReports(String location) {
-        List<BugReport> activeReports = bugRepository.findByIsApprovedAndLocation(geometryHandler.createGeometry(location));
+        List<BugReport> activeReports = bugRepository.findByLocationAndExpirationTimeAndIsApproved(geometryHandler.createGeometry(location));
         return activeReports.stream()
                 .map(this::convertToReportDto)
                 .collect(Collectors.toList());

@@ -58,7 +58,7 @@ public class EventReportService implements ReportService {
 
     @Override
     public List<ReportDTO> getActiveReports(String location) {
-        List<EventReport> activeReports = eventRepository.findByIsApprovedAndLocation(geometryHandler.createGeometry(location));
+        List<EventReport> activeReports = eventRepository.findByLocationAndExpirationTimeAndIsApproved(geometryHandler.createGeometry(location));
         return activeReports.stream()
                 .map(this::convertToReportDto)
                 .collect(Collectors.toList());

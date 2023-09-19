@@ -1,6 +1,5 @@
 package com.hammasir.routingreport.repository;
 
-import com.hammasir.routingreport.model.entity.AccidentReport;
 import com.hammasir.routingreport.model.entity.EventReport;
 import org.locationtech.jts.geom.Geometry;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -22,5 +21,5 @@ public interface EventRepository extends JpaRepository<EventReport, Long> {
             "WHERE ST_DWithin(ST_Transform(er.location, 3857), ST_Transform(:location, 3857), 10) = true " +
             "AND er.expirationTime > CURRENT_TIMESTAMP " +
             "AND er.isApproved = true")
-    List<EventReport> findByIsApprovedAndLocation(@Param("location") Geometry location);
+    List<EventReport> findByLocationAndExpirationTimeAndIsApproved(@Param("location") Geometry location);
 }

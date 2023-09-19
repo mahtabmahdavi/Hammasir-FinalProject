@@ -57,7 +57,7 @@ public class PlaceReportService implements ReportService {
 
     @Override
     public List<ReportDTO> getActiveReports(String location) {
-        List<PlaceReport> activeReports = placeRepository.findByIsApprovedAndLocation(geometryHandler.createGeometry(location));
+        List<PlaceReport> activeReports = placeRepository.findByLocationAndExpirationTimeAndIsApproved(geometryHandler.createGeometry(location));
         return activeReports.stream()
                 .map(this::convertToReportDto)
                 .collect(Collectors.toList());

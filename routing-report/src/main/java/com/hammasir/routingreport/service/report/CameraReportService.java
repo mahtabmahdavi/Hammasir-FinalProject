@@ -60,7 +60,7 @@ public class CameraReportService implements ReportService {
 
     @Override
     public List<ReportDTO> getActiveReports(String location) {
-        List<CameraReport> activeReports = cameraRepository.findByIsApprovedAndLocation(geometryHandler.createGeometry(location));
+        List<CameraReport> activeReports = cameraRepository.findByLocationAndExpirationTimeAndIsApproved(geometryHandler.createGeometry(location));
         return activeReports.stream()
                 .map(this::convertToReportDto)
                 .collect(Collectors.toList());

@@ -21,5 +21,13 @@ public interface AccidentRepository extends JpaRepository<AccidentReport, Long> 
             "WHERE ST_DWithin(ST_Transform(ar.location, 3857), ST_Transform(:location, 3857), 10) = true " +
             "AND ar.expirationTime > CURRENT_TIMESTAMP " +
             "AND ar.isApproved = true")
-    List<AccidentReport> findByIsApprovedAndLocation(@Param("location") Geometry location);
+    List<AccidentReport> findByLocationAndExpirationTimeAndIsApproved(@Param("location") Geometry location);
+
+    @Query(value = "SELECT EXTRACT(HOUR FROM ar.creation_time) AS hour, COUNT(*) AS count " +
+            "FROM accident_report ar " +
+            "WHERE EXTRACT(HOUR FROM ar.creation_time) BETWEEN 0 AND 23 " +
+            "GROUP BY EXTRACT(HOUR FROM ar.creation_time) " +
+            "ORDER BY count DESC " +
+            "LIMIT 5", nativeQuery = true)
+    List<Object[]> findMostAccidentHours();
 }
