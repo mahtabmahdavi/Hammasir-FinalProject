@@ -28,6 +28,7 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(authorizeRequests ->
                         authorizeRequests
                                 .requestMatchers("/authentication/**").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/reports/most-accidental").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/reports/active").hasAnyAuthority(Role.ADMIN.name(), Role.USER.name())
                                 .requestMatchers(HttpMethod.POST, "/reports/create").hasAnyAuthority(Role.ADMIN.name(), Role.USER.name())
                                 .requestMatchers(HttpMethod.PUT, "/reports/like").hasAnyAuthority(Role.ADMIN.name(), Role.USER.name())

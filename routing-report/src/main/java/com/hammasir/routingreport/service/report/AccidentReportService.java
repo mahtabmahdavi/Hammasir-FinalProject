@@ -1,8 +1,10 @@
 package com.hammasir.routingreport.service.report;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hammasir.routingreport.component.GeometryHandler;
 import com.hammasir.routingreport.model.DTO.ChangeDTO;
 import com.hammasir.routingreport.model.DTO.ReportDTO;
+import com.hammasir.routingreport.model.DTO.TimeDTO;
 import com.hammasir.routingreport.model.entity.AccidentReport;
 import com.hammasir.routingreport.model.entity.User;
 import com.hammasir.routingreport.model.enumuration.Accident;
@@ -10,12 +12,15 @@ import com.hammasir.routingreport.repository.AccidentRepository;
 import com.hammasir.routingreport.service.AuthenticationService;
 import com.hammasir.routingreport.service.ReportService;
 import lombok.RequiredArgsConstructor;
+import org.geolatte.geom.M;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -26,6 +31,7 @@ public class AccidentReportService implements ReportService {
     private final AccidentRepository accidentRepository;
     private final AuthenticationService authenticationService;
     private final GeometryHandler geometryHandler;
+    private final ObjectMapper objectMapper;
 
     public ReportDTO convertToReportDto(AccidentReport report) {
         return ReportDTO.builder()
@@ -84,5 +90,11 @@ public class AccidentReportService implements ReportService {
     @Override
     public ReportDTO approveReport(ChangeDTO changedReport) {
         throw new IllegalArgumentException("Approval is not supported for this type of report.");
+    }
+
+    public TimeDTO getMostAccidentalHour() {
+        return TimeDTO.builder()
+                .hour(accidentRepository.findMostAccidentalHour())
+                .build();
     }
 }

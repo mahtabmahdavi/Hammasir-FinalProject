@@ -4,8 +4,10 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hammasir.routingreport.model.DTO.ChangeDTO;
 import com.hammasir.routingreport.model.DTO.ReportDTO;
+import com.hammasir.routingreport.model.DTO.TimeDTO;
 import com.hammasir.routingreport.model.entity.User;
 import com.hammasir.routingreport.component.ReportHandler;
+import com.hammasir.routingreport.service.report.AccidentReportService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -19,6 +21,7 @@ import java.util.List;
 public class ReportController {
 
     private final ReportHandler reportHandler;
+    private final AccidentReportService accidentReportService;
 
     @GetMapping(value = "/active")
     public ResponseEntity<List<ReportDTO>> getActive(@RequestBody String location) {
@@ -30,6 +33,11 @@ public class ReportController {
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }
+    }
+
+    @GetMapping(value = "/most-accidental")
+    public ResponseEntity<TimeDTO> getMostAccidental() {
+        return ResponseEntity.ok(accidentReportService.getMostAccidentalHour());
     }
 
     @PostMapping(value = "/create")

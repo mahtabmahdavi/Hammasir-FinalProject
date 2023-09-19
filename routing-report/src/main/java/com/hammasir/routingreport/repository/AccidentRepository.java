@@ -1,5 +1,6 @@
 package com.hammasir.routingreport.repository;
 
+import com.hammasir.routingreport.model.DTO.TimeDTO;
 import com.hammasir.routingreport.model.entity.AccidentReport;
 import org.locationtech.jts.geom.Geometry;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -8,6 +9,8 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 @Repository
 public interface AccidentRepository extends JpaRepository<AccidentReport, Long> {
@@ -23,11 +26,11 @@ public interface AccidentRepository extends JpaRepository<AccidentReport, Long> 
             "AND ar.isApproved = true")
     List<AccidentReport> findByLocationAndExpirationTimeAndIsApproved(@Param("location") Geometry location);
 
-    @Query(value = "SELECT EXTRACT(HOUR FROM ar.creation_time) AS hour, COUNT(*) AS count " +
-            "FROM accident_report ar " +
+    @Query(value = "SELECT EXTRACT(HOUR FROM ar.creation_time) AS hour " +
+            "FROM accident_reports ar " +
             "WHERE EXTRACT(HOUR FROM ar.creation_time) BETWEEN 0 AND 23 " +
             "GROUP BY EXTRACT(HOUR FROM ar.creation_time) " +
-            "ORDER BY count DESC " +
-            "LIMIT 5", nativeQuery = true)
-    List<Object[]> findMostAccidentHours();
+            "ORDER BY COUNT(*) DESC " +
+            "LIMIT 1", nativeQuery = true)
+    Integer findMostAccidentalHour();
 }

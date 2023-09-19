@@ -1,5 +1,6 @@
 package com.hammasir.routingreport.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hammasir.routingreport.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
