@@ -1,9 +1,7 @@
 package com.hammasir.routingreport.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hammasir.routingreport.component.GeometryFactory;
-import com.hammasir.routingreport.model.dto.ReportDto;
-import com.hammasir.routingreport.model.entity.BugReport;
+import com.hammasir.routingreport.model.dto.ReportDTO;
 import com.hammasir.routingreport.model.entity.TrafficReport;
 import com.hammasir.routingreport.model.enums.Traffic;
 import com.hammasir.routingreport.repository.TrafficRepository;
@@ -21,8 +19,8 @@ public class TrafficService {
     private final AuthenticationService authenticationService;
     private final GeometryFactory geometryFactory;
 
-    public ReportDto convertToReportDto(TrafficReport report) {
-        return ReportDto.builder()
+    public ReportDTO convertToReportDto(TrafficReport report) {
+        return ReportDTO.builder()
                 .type(report.getType())
                 .category(report.getCategory().name())
                 .location(geometryFactory.createWkt(report.getLocation()))
@@ -30,16 +28,16 @@ public class TrafficService {
                 .build();
     }
 
-    public ReportDto createTrafficReport(ReportDto report) {
+    public ReportDTO createTrafficReport(ReportDTO report) {
         boolean isExisted = trafficRepository.existsByLocationAndExpirationTime(report.getLocation());
         if (!isExisted) {
             TrafficReport newReport = new TrafficReport();
             newReport.setType(report.getType());
             newReport.setIsApproved(true);
             newReport.setLikeCounter(0);
-            newReport.setDuration(1);
+            newReport.setDuration(10);
             newReport.setCreationTime(LocalDateTime.now());
-            newReport.setExpirationTime(LocalDateTime.now().plusHours(newReport.getDuration()));
+            newReport.setExpirationTime(LocalDateTime.now().plusMinutes(newReport.getDuration()));
             newReport.setLocation(geometryFactory.createGeometry(report.getLocation()));
             newReport.setCategory(Traffic.fromValue(report.getCategory()));
             newReport.setContributors(List.of());
@@ -50,7 +48,7 @@ public class TrafficService {
         }
     }
 
-    public ReportDto getActiveTrafficReport(ReportDto report) {
+    public ReportDTO getActiveTrafficReport(ReportDTO report) {
         return null;
     }
 }

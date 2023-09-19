@@ -1,9 +1,9 @@
 package com.hammasir.routingreport.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hammasir.routingreport.component.GeometryFactory;
-import com.hammasir.routingreport.model.dto.ReportDto;
-import com.hammasir.routingreport.model.entity.BugReport;
+import com.hammasir.routingreport.model.dto.ApprovedDTO;
+import com.hammasir.routingreport.model.dto.ReportDTO;
+import com.hammasir.routingreport.model.entity.BumpReport;
 import com.hammasir.routingreport.model.entity.PlaceReport;
 import com.hammasir.routingreport.model.enums.Place;
 import com.hammasir.routingreport.repository.PlaceRepository;
@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -21,8 +22,8 @@ public class PlaceService {
     private final AuthenticationService authenticationService;
     private final GeometryFactory geometryFactory;
 
-    public ReportDto convertToReportDto(PlaceReport report) {
-        return ReportDto.builder()
+    public ReportDTO convertToReportDto(PlaceReport report) {
+        return ReportDTO.builder()
                 .type(report.getType())
                 .category(report.getCategory().name())
                 .location(geometryFactory.createWkt(report.getLocation()))
@@ -30,16 +31,16 @@ public class PlaceService {
                 .build();
     }
 
-    public ReportDto createPlaceReport(ReportDto report) {
+    public ReportDTO createPlaceReport(ReportDTO report) {
         boolean isExisted = placeRepository.existsByLocationAndExpirationTime(report.getLocation());
         if (!isExisted) {
             PlaceReport newReport = new PlaceReport();
             newReport.setType(report.getType());
-            newReport.setIsApproved(true);
+            newReport.setIsApproved(false);
             newReport.setLikeCounter(0);
             newReport.setDuration(1);
             newReport.setCreationTime(LocalDateTime.now());
-            newReport.setExpirationTime(LocalDateTime.now().plusHours(newReport.getDuration()));
+            newReport.setExpirationTime(LocalDateTime.now().plusYears(newReport.getDuration()));
             newReport.setLocation(geometryFactory.createGeometry(report.getLocation()));
             newReport.setCategory(Place.fromValue(report.getCategory()));
             newReport.setContributors(List.of());
@@ -50,7 +51,18 @@ public class PlaceService {
         }
     }
 
-    public ReportDto getActivePlaceReport(ReportDto report) {
+    public ReportDTO getActivePlaceReport(ReportDTO report) {
         return null;
+    }
+
+    public ReportDTO approvePlaceReport(ApprovedDTO approvedReport) {
+        Optional<PlaceReport> desiredReport = placeRepository.findById(approvedReport.getReportId());
+        if (desiredReport.isPresent()) {
+            PlaceReport report = desiredReport.get();
+            report.setIsApproved(true);
+            return convertToReportDto(placeRepository.save(report));
+        } else {
+            throw new IllegalArgumentException("Report is NOT found!");
+        }
     }
 }

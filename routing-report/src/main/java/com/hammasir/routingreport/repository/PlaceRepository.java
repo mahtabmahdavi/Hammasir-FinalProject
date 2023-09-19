@@ -1,13 +1,19 @@
 package com.hammasir.routingreport.repository;
 
+import com.hammasir.routingreport.model.entity.BugReport;
 import com.hammasir.routingreport.model.entity.PlaceReport;
+import com.hammasir.routingreport.model.enums.Place;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface PlaceRepository extends JpaRepository<PlaceReport, Long> {
+
+    Optional<PlaceReport> findById(long id);
 
     @Query("SELECT CASE WHEN COUNT(pr) > 0 THEN true ELSE false END " +
             "FROM PlaceReport pr WHERE ST_Equals(pr.location, ST_GeomFromText(:location, 4326)) = true " +

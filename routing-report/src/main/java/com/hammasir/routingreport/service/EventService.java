@@ -1,9 +1,7 @@
 package com.hammasir.routingreport.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hammasir.routingreport.component.GeometryFactory;
-import com.hammasir.routingreport.model.dto.ReportDto;
-import com.hammasir.routingreport.model.entity.BugReport;
+import com.hammasir.routingreport.model.dto.ReportDTO;
 import com.hammasir.routingreport.model.entity.EventReport;
 import com.hammasir.routingreport.model.enums.Event;
 import com.hammasir.routingreport.repository.EventRepository;
@@ -21,8 +19,8 @@ public class EventService {
     private final AuthenticationService authenticationService;
     private final GeometryFactory geometryFactory;
 
-    public ReportDto convertToReportDto(EventReport report) {
-        return ReportDto.builder()
+    public ReportDTO convertToReportDto(EventReport report) {
+        return ReportDTO.builder()
                 .type(report.getType())
                 .category(report.getCategory().name())
                 .location(geometryFactory.createWkt(report.getLocation()))
@@ -30,7 +28,7 @@ public class EventService {
                 .build();
     }
 
-    public ReportDto createEventReport(ReportDto report) {
+    public ReportDTO createEventReport(ReportDTO report) {
         boolean isExisted = eventRepository.existsByLocationAndExpirationTime(report.getLocation());
         if (!isExisted) {
             EventReport newReport = new EventReport();
@@ -39,7 +37,7 @@ public class EventService {
             newReport.setLikeCounter(0);
             newReport.setDuration(1);
             newReport.setCreationTime(LocalDateTime.now());
-            newReport.setExpirationTime(LocalDateTime.now().plusHours(newReport.getDuration()));
+            newReport.setExpirationTime(LocalDateTime.now().plusDays(newReport.getDuration()));
             newReport.setLocation(geometryFactory.createGeometry(report.getLocation()));
             newReport.setCategory(Event.fromValue(report.getCategory()));
             newReport.setContributors(List.of());
@@ -50,7 +48,9 @@ public class EventService {
         }
     }
 
-    public ReportDto getActiveEventReport(ReportDto report) {
+    public ReportDTO getActiveEventReport(ReportDTO report) {
         return null;
     }
+
+
 }

@@ -5,6 +5,7 @@ import com.hammasir.routingreport.model.enums.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -28,7 +29,8 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(authorizeRequests ->
                         authorizeRequests
                                 .requestMatchers("/authentication/**").permitAll()
-                                .requestMatchers("/reports/**").hasAnyAuthority(Role.ADMIN.name(), Role.USER.name())
+                                .requestMatchers(HttpMethod.POST, "/reports/create").hasAnyAuthority(Role.ADMIN.name(), Role.USER.name())
+                                .requestMatchers(HttpMethod.PUT, "/reports/approve").hasAnyAuthority(Role.ADMIN.name())
                                 .anyRequest().authenticated()
                 )
                 .sessionManagement(sessionManagement ->

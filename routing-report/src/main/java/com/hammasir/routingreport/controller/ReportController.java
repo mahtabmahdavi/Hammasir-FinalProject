@@ -1,15 +1,12 @@
 package com.hammasir.routingreport.controller;
 
-import com.hammasir.routingreport.authentication.JwtService;
-import com.hammasir.routingreport.model.dto.ReportDto;
+import com.hammasir.routingreport.model.dto.ApprovedDTO;
+import com.hammasir.routingreport.model.dto.ReportDTO;
 import com.hammasir.routingreport.service.ReportService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping(value = "reports")
@@ -17,28 +14,48 @@ import java.util.List;
 public class ReportController {
 
     private final ReportService reportService;
-    private final JwtService jwtService;
 
-    @GetMapping(value = "/active")
-    public ResponseEntity<List<ReportDto>> getActive(@RequestBody String location) {
+//    @GetMapping(value = "/active")
+//    public ResponseEntity<List<ReportDto>> getActive(@RequestBody String location) {
+//        try {
+//            List<ReportDto> reportList = reportService.getActiveReport(location);
+//            return ResponseEntity.ok(reportList);
+//        } catch (Exception e) {
+//            return ResponseEntity.badRequest().build();
+//        }
+//    }
+
+    @PostMapping(value = "/create")
+    public ResponseEntity<ReportDTO> create(HttpServletRequest request, @RequestBody ReportDTO report) {
         try {
-            List<ReportDto> desiredReport = reportService.getActiveReport(location);
-//            if (createdRestaurant == null) {
-                return ResponseEntity.badRequest().build();
-//            }
-//            return ResponseEntity.ok(createdRestaurant);
+            ReportDTO createdReport = reportService.createReport(report);
+            return ResponseEntity.ok(createdReport);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            return ResponseEntity.badRequest().build();
         }
     }
 
-    @PostMapping(value = "/create")
-    public ResponseEntity<ReportDto> create(HttpServletRequest request, @RequestBody ReportDto report) {
+
+
+//    @PutMapping(value = "/like/{id}")
+//    public ResponseEntity<ReportDto> like(@PathVariable("id") long reportId, @RequestBody String like) {
+//        try {
+//            ObjectMapper objectMapper = new ObjectMapper();
+//            JsonNode jsonNode = objectMapper.readTree(like);
+//            boolean status = Boolean.parseBoolean(jsonNode.get("like").asText());
+//            ReportDto createdReport = reportService.likeReport(reportId, status);
+//            return ResponseEntity.ok(createdReport);
+//        } catch (Exception e) {
+//            return ResponseEntity.badRequest().build();
+//        }
+//    }
+
+    @PutMapping(value = "/approve")
+    public ResponseEntity<ReportDTO> updateIsApproved(@RequestBody ApprovedDTO approvedReport) {
         try {
-            ReportDto createdReport = reportService.createReport(report);
-            return ResponseEntity.ok(createdReport);
+            ReportDTO desiredReport = reportService.approveReport(approvedReport);
+            return ResponseEntity.ok(desiredReport);
         } catch (Exception e) {
-            System.out.println(e.getMessage());
             return ResponseEntity.badRequest().build();
         }
     }

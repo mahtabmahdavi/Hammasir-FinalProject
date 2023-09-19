@@ -6,8 +6,12 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface BugRepository extends JpaRepository<BugReport, Long> {
+
+    Optional<BugReport> findById(long id);
 
     @Query("SELECT CASE WHEN COUNT(br) > 0 THEN true ELSE false END " +
             "FROM BugReport br WHERE ST_Equals(br.location, ST_GeomFromText(:location, 4326)) = true " +

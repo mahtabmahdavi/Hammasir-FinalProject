@@ -1,7 +1,8 @@
 package com.hammasir.routingreport.service;
 
 import com.hammasir.routingreport.component.GeometryFactory;
-import com.hammasir.routingreport.model.dto.ReportDto;
+import com.hammasir.routingreport.model.dto.ApprovedDTO;
+import com.hammasir.routingreport.model.dto.ReportDTO;
 import com.hammasir.routingreport.model.entity.AccidentReport;
 import com.hammasir.routingreport.model.enums.Accident;
 import com.hammasir.routingreport.repository.AccidentRepository;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -19,8 +21,8 @@ public class AccidentService {
     private final AuthenticationService authenticationService;
     private final GeometryFactory geometryFactory;
 
-    public ReportDto convertToReportDto(AccidentReport report) {
-        return ReportDto.builder()
+    public ReportDTO convertToReportDto(AccidentReport report) {
+        return ReportDTO.builder()
                 .type(report.getType())
                 .category(report.getCategory().name())
                 .location(geometryFactory.createWkt(report.getLocation()))
@@ -28,7 +30,7 @@ public class AccidentService {
                 .build();
     }
 
-    public ReportDto createAccidentReport(ReportDto report) {
+    public ReportDTO createAccidentReport(ReportDTO report) {
         boolean isExisted = accidentRepository.existsByLocationAndExpirationTime(report.getLocation());
         if (!isExisted) {
             AccidentReport newReport =  new AccidentReport();
@@ -48,8 +50,10 @@ public class AccidentService {
         }
     }
 
-    public List<ReportDto> getActiveAccidentReport(String location) {
+
+
+//    public List<ReportDto> getActiveAccidentReport(String location) {
 //        List<AccidentReport> activeReports = accidentRepository.findActive(geometryFactory.createGeometry(location));
-        return null;
-    }
+//        return null;
+//    }
 }
