@@ -2,12 +2,13 @@ package com.hammasir.routingreport.controller;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.hammasir.routingreport.model.dto.ApprovalDTO;
-import com.hammasir.routingreport.model.dto.CreationDTO;
-import com.hammasir.routingreport.model.dto.ReportDTO;
-import com.hammasir.routingreport.service.ReportService;
+import com.hammasir.routingreport.model.DTO.ApprovalDTO;
+import com.hammasir.routingreport.model.DTO.ReportDTO;
+import com.hammasir.routingreport.model.entity.User;
+import com.hammasir.routingreport.component.ReportHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,14 +18,14 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ReportController {
 
-    private final ReportService reportService;
+    private final ReportHandler reportHandler;
 
     @GetMapping(value = "/active")
     public ResponseEntity<List<ReportDTO>> getActive(@RequestBody String location) {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             JsonNode jsonNode = objectMapper.readTree(location);
-            List<ReportDTO> reportList = reportService.getActiveReports(jsonNode.get("location").asText());
+            List<ReportDTO> reportList = reportHandler.getActiveReports(jsonNode.get("location").asText());
             return ResponseEntity.ok(reportList);
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
@@ -34,7 +35,9 @@ public class ReportController {
     @PostMapping(value = "/create")
     public ResponseEntity<ReportDTO> create(@RequestBody ReportDTO report) {
         try {
-            ReportDTO createdReport = reportService.createReport(report);
+            User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            report.setUsername(user.getUsername());
+            ReportDTO createdReport = reportHandler.createReport(report);
             return ResponseEntity.ok(createdReport);
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
@@ -59,7 +62,7 @@ public class ReportController {
     @PutMapping(value = "/approve")
     public ResponseEntity<ReportDTO> updateIsApproved(@RequestBody ApprovalDTO approvedReport) {
         try {
-            ReportDTO desiredReport = reportService.approveReport(approvedReport);
+            ReportDTO desiredReport = reportHandler.approveReport(approvedReport);
             return ResponseEntity.ok(desiredReport);
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();

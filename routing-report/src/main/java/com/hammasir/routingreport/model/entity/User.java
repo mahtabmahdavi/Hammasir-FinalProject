@@ -1,8 +1,8 @@
 package com.hammasir.routingreport.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.hammasir.routingreport.model.enums.Gender;
-import com.hammasir.routingreport.model.enums.Role;
+import com.hammasir.routingreport.model.enumuration.Gender;
+import com.hammasir.routingreport.model.enumuration.Role;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;

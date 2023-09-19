@@ -1,6 +1,6 @@
 package com.hammasir.routingreport.model.entity;
 
-import com.hammasir.routingreport.model.enums.Weather;
+import com.hammasir.routingreport.model.enumuration.Weather;
 import jakarta.persistence.*;
 import lombok.*;
 

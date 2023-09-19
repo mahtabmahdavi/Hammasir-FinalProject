@@ -1,10 +1,10 @@
 package com.hammasir.routingreport.service;
 
-import com.hammasir.routingreport.model.auth.AuthenticatedRequest;
-import com.hammasir.routingreport.model.auth.AuthenticatedResponse;
-import com.hammasir.routingreport.model.auth.RegisteredRequest;
-import com.hammasir.routingreport.authentication.JwtService;
-import com.hammasir.routingreport.model.enums.Role;
+import com.hammasir.routingreport.model.authentication.AuthenticatedRequest;
+import com.hammasir.routingreport.model.authentication.AuthenticatedResponse;
+import com.hammasir.routingreport.model.authentication.RegisteredRequest;
+import com.hammasir.routingreport.security.JwtService;
+import com.hammasir.routingreport.model.enumuration.Role;
 import com.hammasir.routingreport.model.entity.User;
 import com.hammasir.routingreport.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -12,10 +12,12 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class AuthenticationService {
 

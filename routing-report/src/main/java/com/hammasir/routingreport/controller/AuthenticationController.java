@@ -1,8 +1,8 @@
 package com.hammasir.routingreport.controller;
 
-import com.hammasir.routingreport.model.auth.AuthenticatedRequest;
-import com.hammasir.routingreport.model.auth.AuthenticatedResponse;
-import com.hammasir.routingreport.model.auth.RegisteredRequest;
+import com.hammasir.routingreport.model.authentication.AuthenticatedRequest;
+import com.hammasir.routingreport.model.authentication.AuthenticatedResponse;
+import com.hammasir.routingreport.model.authentication.RegisteredRequest;
 import com.hammasir.routingreport.service.AuthenticationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

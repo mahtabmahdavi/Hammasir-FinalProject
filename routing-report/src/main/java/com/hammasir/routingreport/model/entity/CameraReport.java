@@ -1,6 +1,6 @@
 package com.hammasir.routingreport.model.entity;
 
-import com.hammasir.routingreport.model.enums.Camera;
+import com.hammasir.routingreport.model.enumuration.Camera;
 import jakarta.persistence.*;
 import lombok.*;
 

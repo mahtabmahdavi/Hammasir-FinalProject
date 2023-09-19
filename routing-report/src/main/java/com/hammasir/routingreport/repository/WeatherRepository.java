@@ -1,8 +1,6 @@
 package com.hammasir.routingreport.repository;
 ;
-import com.hammasir.routingreport.model.entity.AccidentReport;
 import com.hammasir.routingreport.model.entity.WeatherReport;
-import com.hammasir.routingreport.model.enums.Weather;
 import org.locationtech.jts.geom.Geometry;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
