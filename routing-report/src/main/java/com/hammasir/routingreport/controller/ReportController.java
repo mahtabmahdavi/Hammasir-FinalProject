@@ -2,7 +2,7 @@ package com.hammasir.routingreport.controller;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.hammasir.routingreport.model.DTO.ApprovalDTO;
+import com.hammasir.routingreport.model.DTO.ChangeDTO;
 import com.hammasir.routingreport.model.DTO.ReportDTO;
 import com.hammasir.routingreport.model.entity.User;
 import com.hammasir.routingreport.component.ReportHandler;
@@ -44,25 +44,20 @@ public class ReportController {
         }
     }
 
-
-
-//    @PutMapping(value = "/like/{id}")
-//    public ResponseEntity<ReportDto> like(@PathVariable("id") long reportId, @RequestBody String like) {
-//        try {
-//            ObjectMapper objectMapper = new ObjectMapper();
-//            JsonNode jsonNode = objectMapper.readTree(like);
-//            boolean status = Boolean.parseBoolean(jsonNode.get("like").asText());
-//            ReportDto createdReport = reportService.likeReport(reportId, status);
-//            return ResponseEntity.ok(createdReport);
-//        } catch (Exception e) {
-//            return ResponseEntity.badRequest().build();
-//        }
-//    }
+    @PutMapping(value = "/like")
+    public ResponseEntity<ReportDTO> updateLikeCounter(@RequestBody ChangeDTO likeReport) {
+        try {
+            ReportDTO desiredReport = reportHandler.likeReport(likeReport);
+            return ResponseEntity.ok(desiredReport);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
 
     @PutMapping(value = "/approve")
-    public ResponseEntity<ReportDTO> updateIsApproved(@RequestBody ApprovalDTO approvedReport) {
+    public ResponseEntity<ReportDTO> updateIsApproved(@RequestBody ChangeDTO changedReport) {
         try {
-            ReportDTO desiredReport = reportHandler.approveReport(approvedReport);
+            ReportDTO desiredReport = reportHandler.approveReport(changedReport);
             return ResponseEntity.ok(desiredReport);
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();

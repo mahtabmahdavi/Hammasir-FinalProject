@@ -11,6 +11,5 @@ public class ReportDTO {
     private String type;
     private String category;
     private String location;
-    private int like;
     private String username;
 }

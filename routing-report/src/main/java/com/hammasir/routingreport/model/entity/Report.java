@@ -27,9 +27,6 @@ public abstract class Report {
     @Column(name = "is_approved")
     private Boolean isApproved;
 
-    @Column(name = "like_counter")
-    private int likeCounter;
-
     @Transient
     private Integer duration;
 

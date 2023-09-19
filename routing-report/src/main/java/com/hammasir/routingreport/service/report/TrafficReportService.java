@@ -1,9 +1,10 @@
 package com.hammasir.routingreport.service.report;
 
 import com.hammasir.routingreport.component.GeometryHandler;
-import com.hammasir.routingreport.model.DTO.ApprovalDTO;
+import com.hammasir.routingreport.model.DTO.ChangeDTO;
 import com.hammasir.routingreport.model.DTO.ReportDTO;
 import com.hammasir.routingreport.model.entity.TrafficReport;
+import com.hammasir.routingreport.model.entity.User;
 import com.hammasir.routingreport.model.enumuration.Traffic;
 import com.hammasir.routingreport.repository.TrafficRepository;
 import com.hammasir.routingreport.service.AuthenticationService;
@@ -12,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -30,7 +32,6 @@ public class TrafficReportService implements ReportService {
                 .type(report.getType())
                 .category(report.getCategory().name())
                 .location(geometryHandler.createWkt(report.getLocation()))
-                .like(report.getLikeCounter())
                 .username(report.getUser().getUsername())
                 .build();
     }
@@ -42,7 +43,6 @@ public class TrafficReportService implements ReportService {
             TrafficReport newReport = new TrafficReport();
             newReport.setType(report.getType());
             newReport.setIsApproved(true);
-            newReport.setLikeCounter(0);
             newReport.setDuration(10);
             newReport.setCreationTime(LocalDateTime.now());
             newReport.setExpirationTime(LocalDateTime.now().plusMinutes(newReport.getDuration()));
@@ -65,7 +65,24 @@ public class TrafficReportService implements ReportService {
     }
 
     @Override
-    public ReportDTO approveReport(ApprovalDTO approvedReport) {
-        return null;
+    public ReportDTO likeReport(ChangeDTO likedReport) {
+        TrafficReport report = trafficRepository.findById(likedReport.getReportId())
+                .orElseThrow(() -> new IllegalArgumentException("Report is NOT found!"));
+        List<Long> contributors = report.getContributors();
+        User desiredUser = authenticationService.findUser(likedReport.getUsername());
+        if (contributors.contains(desiredUser.getId())) {
+            throw new IllegalArgumentException("User has already liked or disliked this report.");
+        } else {
+            contributors.add(desiredUser.getId());
+            report.setContributors(contributors);
+            Duration durationToAdd = likedReport.isStatus() ? Duration.ofMinutes(1) : Duration.ofMinutes(-1);
+            report.setExpirationTime(report.getExpirationTime().plus(durationToAdd));
+            return convertToReportDto(trafficRepository.save(report));
+        }
+    }
+
+    @Override
+    public ReportDTO approveReport(ChangeDTO changedReport) {
+        throw new IllegalArgumentException("Approval is not supported for this type of report.");
     }
 }

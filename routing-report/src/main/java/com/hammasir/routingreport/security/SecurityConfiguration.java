@@ -1,6 +1,5 @@
 package com.hammasir.routingreport.security;
 
-import com.hammasir.routingreport.security.JwtAuthenticationFilter;
 import com.hammasir.routingreport.model.enumuration.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -29,7 +28,9 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(authorizeRequests ->
                         authorizeRequests
                                 .requestMatchers("/authentication/**").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/reports/active").hasAnyAuthority(Role.ADMIN.name(), Role.USER.name())
                                 .requestMatchers(HttpMethod.POST, "/reports/create").hasAnyAuthority(Role.ADMIN.name(), Role.USER.name())
+                                .requestMatchers(HttpMethod.PUT, "/reports/like").hasAnyAuthority(Role.ADMIN.name(), Role.USER.name())
                                 .requestMatchers(HttpMethod.PUT, "/reports/approve").hasAnyAuthority(Role.ADMIN.name())
                                 .anyRequest().authenticated()
                 )

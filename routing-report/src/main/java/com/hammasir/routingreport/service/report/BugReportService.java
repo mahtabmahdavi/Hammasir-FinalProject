@@ -1,9 +1,10 @@
 package com.hammasir.routingreport.service.report;
 
 import com.hammasir.routingreport.component.GeometryHandler;
-import com.hammasir.routingreport.model.DTO.ApprovalDTO;
+import com.hammasir.routingreport.model.DTO.ChangeDTO;
 import com.hammasir.routingreport.model.DTO.ReportDTO;
 import com.hammasir.routingreport.model.entity.BugReport;
+import com.hammasir.routingreport.model.entity.User;
 import com.hammasir.routingreport.model.enumuration.Bug;
 import com.hammasir.routingreport.repository.BugRepository;
 import com.hammasir.routingreport.service.AuthenticationService;
@@ -12,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -31,7 +33,6 @@ public class BugReportService implements ReportService {
                 .type(report.getType())
                 .category(report.getCategory().name())
                 .location(geometryHandler.createWkt(report.getLocation()))
-                .like(report.getLikeCounter())
                 .username(report.getUser().getUsername())
                 .build();
     }
@@ -43,7 +44,6 @@ public class BugReportService implements ReportService {
             BugReport newReport = new BugReport();
             newReport.setType(report.getType());
             newReport.setIsApproved(false);
-            newReport.setLikeCounter(0);
             newReport.setDuration(1);
             newReport.setCreationTime(LocalDateTime.now());
             newReport.setExpirationTime(LocalDateTime.now().plusMonths(newReport.getDuration()));
@@ -64,13 +64,29 @@ public class BugReportService implements ReportService {
                 .map(this::convertToReportDto)
                 .collect(Collectors.toList());
     }
+    @Override
+    public ReportDTO likeReport(ChangeDTO likedReport) {
+        BugReport report = bugRepository.findById(likedReport.getReportId())
+                .orElseThrow(() -> new IllegalArgumentException("Report is NOT found!"));
+        List<Long> contributors = report.getContributors();
+        User desiredUser = authenticationService.findUser(likedReport.getUsername());
+        if (contributors.contains(desiredUser.getId())) {
+            throw new IllegalArgumentException("User has already liked or disliked this report.");
+        } else {
+            contributors.add(desiredUser.getId());
+            report.setContributors(contributors);
+            Duration durationToAdd = likedReport.isStatus() ? Duration.ofDays(3) : Duration.ofDays(-3);
+            report.setExpirationTime(report.getExpirationTime().plus(durationToAdd));
+            return convertToReportDto(bugRepository.save(report));
+        }
+    }
 
     @Override
-    public ReportDTO approveReport(ApprovalDTO approvedReport) {
-        Optional<BugReport> desiredReport = bugRepository.findById(approvedReport.getReportId());
+    public ReportDTO approveReport(ChangeDTO changedReport) {
+        Optional<BugReport> desiredReport = bugRepository.findById(changedReport.getReportId());
         if (desiredReport.isPresent()) {
             BugReport report = desiredReport.get();
-            report.setIsApproved(true);
+            report.setIsApproved(changedReport.isStatus());
             return convertToReportDto(bugRepository.save(report));
         } else {
             throw new IllegalArgumentException("Report is NOT found!");

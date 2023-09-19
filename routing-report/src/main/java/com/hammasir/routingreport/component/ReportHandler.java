@@ -1,7 +1,6 @@
 package com.hammasir.routingreport.component;
 
-import com.hammasir.routingreport.component.ReportServiceFactory;
-import com.hammasir.routingreport.model.DTO.ApprovalDTO;
+import com.hammasir.routingreport.model.DTO.ChangeDTO;
 import com.hammasir.routingreport.model.DTO.ReportDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,8 +20,12 @@ public class ReportHandler {
         return reportServiceFactory.getReportService(report.getType()).createReport(report);
     }
 
-    public ReportDTO approveReport(ApprovalDTO approvedReport) {
-        return reportServiceFactory.getReportService(approvedReport.getType()).approveReport(approvedReport);
+    public ReportDTO approveReport(ChangeDTO changedReport) {
+        return reportServiceFactory.getReportService(changedReport.getType()).approveReport(changedReport);
+    }
+
+    public ReportDTO likeReport(ChangeDTO likedReport) {
+        return reportServiceFactory.getReportService(likedReport.getType()).likeReport(likedReport);
     }
 
     public List<ReportDTO> getActiveReports(String location) {
