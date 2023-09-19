@@ -2,6 +2,8 @@ package com.hammasir.routingreport.service;
 
 import com.hammasir.routingreport.component.GeometryFactory;
 import com.hammasir.routingreport.model.dto.CreationDTO;
+import com.hammasir.routingreport.model.dto.ReportDTO;
+import com.hammasir.routingreport.model.entity.AccidentReport;
 import com.hammasir.routingreport.model.entity.EventReport;
 import com.hammasir.routingreport.model.enums.Event;
 import com.hammasir.routingreport.repository.EventRepository;
@@ -10,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -19,16 +22,17 @@ public class EventService {
     private final AuthenticationService authenticationService;
     private final GeometryFactory geometryFactory;
 
-    public CreationDTO convertToReportDto(EventReport report) {
-        return CreationDTO.builder()
+    public ReportDTO convertToReportDto(EventReport report) {
+        return ReportDTO.builder()
                 .type(report.getType())
                 .category(report.getCategory().name())
                 .location(geometryFactory.createWkt(report.getLocation()))
+                .like(report.getLikeCounter())
                 .username(report.getUser().getUsername())
                 .build();
     }
 
-    public CreationDTO createEventReport(CreationDTO report) {
+    public ReportDTO createEventReport(ReportDTO report) {
         boolean isExisted = eventRepository.existsByLocationAndExpirationTime(report.getLocation());
         if (!isExisted) {
             EventReport newReport = new EventReport();
@@ -48,9 +52,10 @@ public class EventService {
         }
     }
 
-    public CreationDTO getActiveEventReport(CreationDTO report) {
-        return null;
+    public List<ReportDTO> getActiveEventReport(String location) {
+        List<EventReport> activeReports = eventRepository.findByIsApprovedAndLocation(geometryFactory.createGeometry(location));
+        return activeReports.stream()
+                .map(this::convertToReportDto)
+                .collect(Collectors.toList());
     }
-
-
 }

@@ -2,16 +2,21 @@ package com.hammasir.routingreport.service;
 
 import com.hammasir.routingreport.component.GeometryFactory;
 import com.hammasir.routingreport.model.dto.CreationDTO;
+import com.hammasir.routingreport.model.dto.ReportDTO;
+import com.hammasir.routingreport.model.entity.AccidentReport;
 import com.hammasir.routingreport.model.entity.TrafficReport;
 import com.hammasir.routingreport.model.enums.Traffic;
 import com.hammasir.routingreport.repository.TrafficRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class TrafficService {
 
@@ -19,16 +24,17 @@ public class TrafficService {
     private final AuthenticationService authenticationService;
     private final GeometryFactory geometryFactory;
 
-    public CreationDTO convertToReportDto(TrafficReport report) {
-        return CreationDTO.builder()
+    public ReportDTO convertToReportDto(TrafficReport report) {
+        return ReportDTO.builder()
                 .type(report.getType())
                 .category(report.getCategory().name())
                 .location(geometryFactory.createWkt(report.getLocation()))
+                .like(report.getLikeCounter())
                 .username(report.getUser().getUsername())
                 .build();
     }
 
-    public CreationDTO createTrafficReport(CreationDTO report) {
+    public ReportDTO createTrafficReport(ReportDTO report) {
         boolean isExisted = trafficRepository.existsByLocationAndExpirationTime(report.getLocation());
         if (!isExisted) {
             TrafficReport newReport = new TrafficReport();
@@ -48,7 +54,10 @@ public class TrafficService {
         }
     }
 
-    public CreationDTO getActiveTrafficReport(CreationDTO report) {
-        return null;
+    public List<ReportDTO> getActiveTrafficReport(String location) {
+        List<TrafficReport> activeReports = trafficRepository.findByIsApprovedAndLocation(geometryFactory.createGeometry(location));
+        return activeReports.stream()
+                .map(this::convertToReportDto)
+                .collect(Collectors.toList());
     }
 }

@@ -3,6 +3,8 @@ package com.hammasir.routingreport.service;
 import com.hammasir.routingreport.component.GeometryFactory;
 import com.hammasir.routingreport.model.dto.ApprovalDTO;
 import com.hammasir.routingreport.model.dto.CreationDTO;
+import com.hammasir.routingreport.model.dto.ReportDTO;
+import com.hammasir.routingreport.model.entity.AccidentReport;
 import com.hammasir.routingreport.model.entity.BumpReport;
 import com.hammasir.routingreport.repository.BumpRepository;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +13,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -20,16 +23,17 @@ public class BumpService {
     private final AuthenticationService authenticationService;
     private final GeometryFactory geometryFactory;
 
-    public CreationDTO convertToReportDto(BumpReport report) {
-        return CreationDTO.builder()
+    public ReportDTO convertToReportDto(BumpReport report) {
+        return ReportDTO.builder()
                 .type(report.getType())
                 .category(null)
                 .location(geometryFactory.createWkt(report.getLocation()))
+                .like(report.getLikeCounter())
                 .username(report.getUser().getUsername())
                 .build();
     }
 
-    public CreationDTO createBumpReport(CreationDTO report) {
+    public ReportDTO createBumpReport(ReportDTO report) {
         boolean isExisted = bumpRepository.existsByLocationAndExpirationTime(report.getLocation());
         if (!isExisted) {
             BumpReport newReport = new BumpReport();
@@ -48,11 +52,14 @@ public class BumpService {
         }
     }
 
-    public CreationDTO getActiveBumpReport(CreationDTO report) {
-        return null;
+    public List<ReportDTO> getActiveBumpReport(String location) {
+        List<BumpReport> activeReports = bumpRepository.findByIsApprovedAndLocation(geometryFactory.createGeometry(location));
+        return activeReports.stream()
+                .map(this::convertToReportDto)
+                .collect(Collectors.toList());
     }
 
-    public CreationDTO approveBumpReport(ApprovalDTO approvedReport) {
+    public ReportDTO approveBumpReport(ApprovalDTO approvedReport) {
         Optional<BumpReport> desiredReport = bumpRepository.findById(approvedReport.getReportId());
         if (desiredReport.isPresent()) {
             BumpReport report = desiredReport.get();

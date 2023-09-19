@@ -2,17 +2,21 @@ package com.hammasir.routingreport.service;
 
 import com.hammasir.routingreport.component.GeometryFactory;
 import com.hammasir.routingreport.model.dto.CreationDTO;
+import com.hammasir.routingreport.model.dto.ReportDTO;
+import com.hammasir.routingreport.model.entity.AccidentReport;
 import com.hammasir.routingreport.model.entity.WeatherReport;
 import com.hammasir.routingreport.model.enums.Weather;
 import com.hammasir.routingreport.repository.WeatherRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class WeatherService {
 
@@ -20,16 +24,17 @@ public class WeatherService {
     private final AuthenticationService authenticationService;
     private final GeometryFactory geometryFactory;
 
-    public CreationDTO convertToReportDto(WeatherReport report) {
-        return CreationDTO.builder()
+    public ReportDTO convertToReportDto(WeatherReport report) {
+        return ReportDTO.builder()
                 .type(report.getType())
                 .category(report.getCategory().name())
                 .location(geometryFactory.createWkt(report.getLocation()))
+                .like(report.getLikeCounter())
                 .username(report.getUser().getUsername())
                 .build();
     }
 
-    public CreationDTO createWeatherReport(CreationDTO report) {
+    public ReportDTO createWeatherReport(ReportDTO report) {
         boolean isExisted = weatherRepository.existsByLocationAndExpirationTime(report.getLocation());
         if (!isExisted) {
             WeatherReport newReport = new WeatherReport();
@@ -49,10 +54,10 @@ public class WeatherService {
         }
     }
 
-    public List<CreationDTO> getActiveWeatherReport(String location) {
-         List<WeatherReport> arr = weatherRepository.findActive(geometryFactory.createGeometry(location));
-         return arr.stream()
-                 .map(this::convertToReportDto)
-                 .collect(Collectors.toList());
+    public List<ReportDTO> getActiveWeatherReport(String location) {
+        List<WeatherReport> activeReports = weatherRepository.findByIsApprovedAndLocation(geometryFactory.createGeometry(location));
+        return activeReports.stream()
+                .map(this::convertToReportDto)
+                .collect(Collectors.toList());
     }
 }

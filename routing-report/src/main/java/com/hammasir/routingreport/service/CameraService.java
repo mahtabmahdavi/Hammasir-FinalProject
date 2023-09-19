@@ -3,6 +3,8 @@ package com.hammasir.routingreport.service;
 import com.hammasir.routingreport.component.GeometryFactory;
 import com.hammasir.routingreport.model.dto.ApprovalDTO;
 import com.hammasir.routingreport.model.dto.CreationDTO;
+import com.hammasir.routingreport.model.dto.ReportDTO;
+import com.hammasir.routingreport.model.entity.AccidentReport;
 import com.hammasir.routingreport.model.entity.CameraReport;
 import com.hammasir.routingreport.model.enums.Camera;
 import com.hammasir.routingreport.repository.CameraRepository;
@@ -12,6 +14,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -21,16 +24,17 @@ public class CameraService {
     private final AuthenticationService authenticationService;
     private final GeometryFactory geometryFactory;
 
-    public CreationDTO convertToReportDto(CameraReport report) {
-        return CreationDTO.builder()
+    public ReportDTO convertToReportDto(CameraReport report) {
+        return ReportDTO.builder()
                 .type(report.getType())
                 .category(report.getCategory().name())
                 .location(geometryFactory.createWkt(report.getLocation()))
+                .like(report.getLikeCounter())
                 .username(report.getUser().getUsername())
                 .build();
     }
 
-    public CreationDTO createCameraReport(CreationDTO report) {
+    public ReportDTO createCameraReport(ReportDTO report) {
         boolean isExisted = cameraRepository.existsByLocationAndExpirationTime(report.getLocation());
         if (!isExisted) {
             CameraReport newReport = new CameraReport();
@@ -51,12 +55,14 @@ public class CameraService {
         }
     }
 
-    public CreationDTO getActiveCameraReport(CreationDTO report) {
-        return null;
+    public List<ReportDTO> getActiveCameraReport(String location) {
+        List<CameraReport> activeReports = cameraRepository.findByIsApprovedAndLocation(geometryFactory.createGeometry(location));
+        return activeReports.stream()
+                .map(this::convertToReportDto)
+                .collect(Collectors.toList());
     }
 
-
-    public CreationDTO approveCameraReport(ApprovalDTO approvedReport) {
+    public ReportDTO approveCameraReport(ApprovalDTO approvedReport) {
         Optional<CameraReport> desiredReport = cameraRepository.findById(approvedReport.getReportId());
         if (desiredReport.isPresent()) {
             CameraReport report = desiredReport.get();

@@ -3,6 +3,8 @@ package com.hammasir.routingreport.service;
 import com.hammasir.routingreport.component.GeometryFactory;
 import com.hammasir.routingreport.model.dto.ApprovalDTO;
 import com.hammasir.routingreport.model.dto.CreationDTO;
+import com.hammasir.routingreport.model.dto.ReportDTO;
+import com.hammasir.routingreport.model.entity.AccidentReport;
 import com.hammasir.routingreport.model.entity.BugReport;
 import com.hammasir.routingreport.model.enums.Bug;
 import com.hammasir.routingreport.repository.BugRepository;
@@ -12,6 +14,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -21,16 +24,17 @@ public class BugService {
     private final AuthenticationService authenticationService;
     private final GeometryFactory geometryFactory;
 
-    public CreationDTO convertToReportDto(BugReport report) {
-        return CreationDTO.builder()
+    public ReportDTO convertToReportDto(BugReport report) {
+        return ReportDTO.builder()
                 .type(report.getType())
                 .category(report.getCategory().name())
                 .location(geometryFactory.createWkt(report.getLocation()))
+                .like(report.getLikeCounter())
                 .username(report.getUser().getUsername())
                 .build();
     }
 
-    public CreationDTO createBugReport(CreationDTO report) {
+    public ReportDTO createBugReport(ReportDTO report) {
         boolean isExisted = bugRepository.existsByLocationAndExpirationTime(report.getLocation());
         if (!isExisted) {
             BugReport newReport = new BugReport();
@@ -50,12 +54,14 @@ public class BugService {
         }
     }
 
-    public CreationDTO getActiveBugReport(CreationDTO report) {
-        return null;
+    public List<ReportDTO> getActiveBugReport(String location) {
+        List<BugReport> activeReports = bugRepository.findByIsApprovedAndLocation(geometryFactory.createGeometry(location));
+        return activeReports.stream()
+                .map(this::convertToReportDto)
+                .collect(Collectors.toList());
     }
 
-
-    public CreationDTO approveBugReport(ApprovalDTO approvedReport) {
+    public ReportDTO approveBugReport(ApprovalDTO approvedReport) {
         Optional<BugReport> desiredReport = bugRepository.findById(approvedReport.getReportId());
         if (desiredReport.isPresent()) {
             BugReport report = desiredReport.get();

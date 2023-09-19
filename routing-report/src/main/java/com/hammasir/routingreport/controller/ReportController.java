@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hammasir.routingreport.model.dto.ApprovalDTO;
 import com.hammasir.routingreport.model.dto.CreationDTO;
-import com.hammasir.routingreport.model.dto.ReportDto;
+import com.hammasir.routingreport.model.dto.ReportDTO;
 import com.hammasir.routingreport.service.ReportService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -20,11 +20,11 @@ public class ReportController {
     private final ReportService reportService;
 
     @GetMapping(value = "/active")
-    public ResponseEntity<List<ReportDto>> getActive(@RequestBody String location) {
+    public ResponseEntity<List<ReportDTO>> getActive(@RequestBody String location) {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             JsonNode jsonNode = objectMapper.readTree(location);
-            List<ReportDto> reportList = reportService.getActiveReports(jsonNode.get("location").asText());
+            List<ReportDTO> reportList = reportService.getActiveReports(jsonNode.get("location").asText());
             return ResponseEntity.ok(reportList);
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
@@ -32,9 +32,9 @@ public class ReportController {
     }
 
     @PostMapping(value = "/create")
-    public ResponseEntity<CreationDTO> create(@RequestBody CreationDTO report) {
+    public ResponseEntity<ReportDTO> create(@RequestBody ReportDTO report) {
         try {
-            CreationDTO createdReport = reportService.createReport(report);
+            ReportDTO createdReport = reportService.createReport(report);
             return ResponseEntity.ok(createdReport);
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
@@ -57,9 +57,9 @@ public class ReportController {
 //    }
 
     @PutMapping(value = "/approve")
-    public ResponseEntity<CreationDTO> updateIsApproved(@RequestBody ApprovalDTO approvedReport) {
+    public ResponseEntity<ReportDTO> updateIsApproved(@RequestBody ApprovalDTO approvedReport) {
         try {
-            CreationDTO desiredReport = reportService.approveReport(approvedReport);
+            ReportDTO desiredReport = reportService.approveReport(approvedReport);
             return ResponseEntity.ok(desiredReport);
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();

@@ -3,6 +3,8 @@ package com.hammasir.routingreport.service;
 import com.hammasir.routingreport.component.GeometryFactory;
 import com.hammasir.routingreport.model.dto.ApprovalDTO;
 import com.hammasir.routingreport.model.dto.CreationDTO;
+import com.hammasir.routingreport.model.dto.ReportDTO;
+import com.hammasir.routingreport.model.entity.AccidentReport;
 import com.hammasir.routingreport.model.entity.PlaceReport;
 import com.hammasir.routingreport.model.enums.Place;
 import com.hammasir.routingreport.repository.PlaceRepository;
@@ -12,6 +14,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -21,16 +24,17 @@ public class PlaceService {
     private final AuthenticationService authenticationService;
     private final GeometryFactory geometryFactory;
 
-    public CreationDTO convertToReportDto(PlaceReport report) {
-        return CreationDTO.builder()
+    public ReportDTO convertToReportDto(PlaceReport report) {
+        return ReportDTO.builder()
                 .type(report.getType())
                 .category(report.getCategory().name())
                 .location(geometryFactory.createWkt(report.getLocation()))
+                .like(report.getLikeCounter())
                 .username(report.getUser().getUsername())
                 .build();
     }
 
-    public CreationDTO createPlaceReport(CreationDTO report) {
+    public ReportDTO createPlaceReport(ReportDTO report) {
         boolean isExisted = placeRepository.existsByLocationAndExpirationTime(report.getLocation());
         if (!isExisted) {
             PlaceReport newReport = new PlaceReport();
@@ -50,11 +54,14 @@ public class PlaceService {
         }
     }
 
-    public CreationDTO getActivePlaceReport(CreationDTO report) {
-        return null;
+    public List<ReportDTO> getActivePlaceReport(String location) {
+        List<PlaceReport> activeReports = placeRepository.findByIsApprovedAndLocation(geometryFactory.createGeometry(location));
+        return activeReports.stream()
+                .map(this::convertToReportDto)
+                .collect(Collectors.toList());
     }
 
-    public CreationDTO approvePlaceReport(ApprovalDTO approvedReport) {
+    public ReportDTO approvePlaceReport(ApprovalDTO approvedReport) {
         Optional<PlaceReport> desiredReport = placeRepository.findById(approvedReport.getReportId());
         if (desiredReport.isPresent()) {
             PlaceReport report = desiredReport.get();

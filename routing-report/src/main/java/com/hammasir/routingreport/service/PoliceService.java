@@ -2,16 +2,22 @@ package com.hammasir.routingreport.service;
 
 import com.hammasir.routingreport.component.GeometryFactory;
 import com.hammasir.routingreport.model.dto.CreationDTO;
+import com.hammasir.routingreport.model.dto.ReportDTO;
+import com.hammasir.routingreport.model.entity.AccidentReport;
 import com.hammasir.routingreport.model.entity.PoliceReport;
+import com.hammasir.routingreport.model.entity.Report;
 import com.hammasir.routingreport.model.enums.Police;
 import com.hammasir.routingreport.repository.PoliceRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class PoliceService {
 
@@ -19,16 +25,17 @@ public class PoliceService {
     private final AuthenticationService authenticationService;
     private final GeometryFactory geometryFactory;
 
-    public CreationDTO convertToReportDto(PoliceReport report) {
-        return CreationDTO.builder()
+    public ReportDTO convertToReportDto(PoliceReport report) {
+        return ReportDTO.builder()
                 .type(report.getType())
                 .category(report.getCategory().name())
                 .location(geometryFactory.createWkt(report.getLocation()))
+                .like(report.getLikeCounter())
                 .username(report.getUser().getUsername())
                 .build();
     }
 
-    public CreationDTO createPoliceReport(CreationDTO report) {
+    public ReportDTO createPoliceReport(ReportDTO report) {
         boolean isExisted = policeRepository.existsByLocationAndExpirationTime(report.getLocation());
         if (!isExisted) {
             PoliceReport newReport = new PoliceReport();
@@ -48,7 +55,10 @@ public class PoliceService {
         }
     }
 
-    public CreationDTO getActivePoliceReport(CreationDTO report) {
-        return null;
+    public List<ReportDTO> getActivePoliceReport(String location) {
+        List<PoliceReport> activeReports = policeRepository.findByIsApprovedAndLocation(geometryFactory.createGeometry(location));
+        return activeReports.stream()
+                .map(this::convertToReportDto)
+                .collect(Collectors.toList());
     }
 }

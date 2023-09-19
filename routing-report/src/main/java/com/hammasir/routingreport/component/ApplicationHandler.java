@@ -2,7 +2,7 @@ package com.hammasir.routingreport.component;
 
 import com.hammasir.routingreport.model.dto.ApprovalDTO;
 import com.hammasir.routingreport.model.dto.CreationDTO;
-import com.hammasir.routingreport.model.dto.ReportDto;
+import com.hammasir.routingreport.model.dto.ReportDTO;
 import com.hammasir.routingreport.service.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -24,7 +24,7 @@ public class ApplicationHandler {
     private final TrafficService trafficService;
     private final WeatherService weatherService;
 
-    public CreationDTO createReport(CreationDTO report) {
+    public ReportDTO createReport(ReportDTO report) {
         return switch (report.getType()) {
             case "accident" -> accidentService.createAccidentReport(report);
             case "bug" -> bugService.createBugReport(report);
@@ -43,7 +43,7 @@ public class ApplicationHandler {
 //
 //    }
 
-    public CreationDTO approveReport(ApprovalDTO approvedReport) {
+    public ReportDTO approveReport(ApprovalDTO approvedReport) {
         return switch (approvedReport.getType()) {
             case "bug" -> bugService.approveBugReport(approvedReport);
             case "bump" -> bumpService.approveBumpReport(approvedReport);
@@ -53,17 +53,17 @@ public class ApplicationHandler {
         };
     }
 
-    public List<ReportDto> getActiveReports(String location) {
-        List<ReportDto> activeReports = new ArrayList<>();
+    public List<ReportDTO> getActiveReports(String location) {
+        List<ReportDTO> activeReports = new ArrayList<>();
         activeReports.addAll(accidentService.getActiveAccidentReport(location));
-//        activeReports.addAll(bugService.getActiveBugReport(location));
-//        activeReports.addAll(bumpService.getActiveBumpReport(location));
-//        activeReports.addAll(cameraService.getActiveCameraReport(location));
-//        activeReports.addAll(eventService.getActiveEventReport(location));
-//        activeReports.addAll(placeService.getActivePlaceReport(location));
-//        activeReports.addAll(policeService.getActivePoliceReport(location));
-//        activeReports.addAll(trafficService.getActiveTrafficReport(location));
-//        activeReports.addAll(weatherService.getActiveWeatherReport(location));
+        activeReports.addAll(bugService.getActiveBugReport(location));
+        activeReports.addAll(bumpService.getActiveBumpReport(location));
+        activeReports.addAll(cameraService.getActiveCameraReport(location));
+        activeReports.addAll(eventService.getActiveEventReport(location));
+        activeReports.addAll(placeService.getActivePlaceReport(location));
+        activeReports.addAll(policeService.getActivePoliceReport(location));
+        activeReports.addAll(trafficService.getActiveTrafficReport(location));
+        activeReports.addAll(weatherService.getActiveWeatherReport(location));
         return activeReports;
     }
 }

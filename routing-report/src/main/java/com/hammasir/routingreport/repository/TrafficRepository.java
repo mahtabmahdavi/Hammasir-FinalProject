@@ -1,10 +1,15 @@
 package com.hammasir.routingreport.repository;
 
+import com.hammasir.routingreport.model.entity.AccidentReport;
 import com.hammasir.routingreport.model.entity.TrafficReport;
+import com.hammasir.routingreport.model.enums.Traffic;
+import org.locationtech.jts.geom.Geometry;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 @Repository
 public interface TrafficRepository extends JpaRepository<TrafficReport, Long> {
@@ -14,7 +19,9 @@ public interface TrafficRepository extends JpaRepository<TrafficReport, Long> {
             "AND tr.expirationTime > CURRENT_TIMESTAMP")
     boolean existsByLocationAndExpirationTime(@Param("location") String location);
 
-//    @Query("SELECT tr FROM TrafficReport tr WHERE ST_Equals(tr.location, ST_GeomFromText(:location)) " +
-//            "AND tr.expirationTime > CURRENT_TIMESTAMP")
-//    Optional<TrafficReport> findByLocationAndExpirationTime(@Param("location") String location);
+    @Query("SELECT tr FROM TrafficReport tr " +
+            "WHERE ST_DWithin(ST_Transform(tr.location, 3857), ST_Transform(:location, 3857), 10) = true " +
+            "AND tr.expirationTime > CURRENT_TIMESTAMP " +
+            "AND tr.isApproved = true")
+    List<TrafficReport> findByIsApprovedAndLocation(@Param("location") Geometry location);
 }

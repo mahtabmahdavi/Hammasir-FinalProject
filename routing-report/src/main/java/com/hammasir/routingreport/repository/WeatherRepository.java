@@ -2,6 +2,7 @@ package com.hammasir.routingreport.repository;
 ;
 import com.hammasir.routingreport.model.entity.AccidentReport;
 import com.hammasir.routingreport.model.entity.WeatherReport;
+import com.hammasir.routingreport.model.enums.Weather;
 import org.locationtech.jts.geom.Geometry;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -22,7 +23,10 @@ public interface WeatherRepository extends JpaRepository<WeatherReport, Long> {
 //            "AND wr.expirationTime > CURRENT_TIMESTAMP")
 //    Optional<WeatherReport> findByLocationAndExpirationTime(@Param("location") String location);
 
-    @Query("SELECT ar FROM WeatherReport ar WHERE ST_Intersects(ar.location, ST_Buffer(:location, 10 * 0.00001)) = true " +
-            "AND ar.expirationTime > CURRENT_TIMESTAMP")
-    List<WeatherReport> findActive(@Param("location") Geometry location);
+    @Query("SELECT wr FROM WeatherReport wr " +
+            "WHERE ST_DWithin(ST_Transform(wr.location, 3857), ST_Transform(:location, 3857), 10) = true " +
+            "AND wr.expirationTime > CURRENT_TIMESTAMP " +
+            "AND wr.isApproved = true")
+    List<WeatherReport> findByIsApprovedAndLocation(@Param("location") Geometry location);
+
 }
