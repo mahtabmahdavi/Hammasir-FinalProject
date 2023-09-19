@@ -1,12 +1,16 @@
 package com.hammasir.routingreport.controller;
 
-import com.hammasir.routingreport.model.dto.ApprovedDTO;
-import com.hammasir.routingreport.model.dto.ReportDTO;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.hammasir.routingreport.model.dto.ApprovalDTO;
+import com.hammasir.routingreport.model.dto.CreationDTO;
+import com.hammasir.routingreport.model.dto.ReportDto;
 import com.hammasir.routingreport.service.ReportService;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping(value = "reports")
@@ -15,20 +19,22 @@ public class ReportController {
 
     private final ReportService reportService;
 
-//    @GetMapping(value = "/active")
-//    public ResponseEntity<List<ReportDto>> getActive(@RequestBody String location) {
-//        try {
-//            List<ReportDto> reportList = reportService.getActiveReport(location);
-//            return ResponseEntity.ok(reportList);
-//        } catch (Exception e) {
-//            return ResponseEntity.badRequest().build();
-//        }
-//    }
+    @GetMapping(value = "/active")
+    public ResponseEntity<List<ReportDto>> getActive(@RequestBody String location) {
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode jsonNode = objectMapper.readTree(location);
+            List<ReportDto> reportList = reportService.getActiveReports(jsonNode.get("location").asText());
+            return ResponseEntity.ok(reportList);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
 
     @PostMapping(value = "/create")
-    public ResponseEntity<ReportDTO> create(HttpServletRequest request, @RequestBody ReportDTO report) {
+    public ResponseEntity<CreationDTO> create(@RequestBody CreationDTO report) {
         try {
-            ReportDTO createdReport = reportService.createReport(report);
+            CreationDTO createdReport = reportService.createReport(report);
             return ResponseEntity.ok(createdReport);
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
@@ -51,9 +57,9 @@ public class ReportController {
 //    }
 
     @PutMapping(value = "/approve")
-    public ResponseEntity<ReportDTO> updateIsApproved(@RequestBody ApprovedDTO approvedReport) {
+    public ResponseEntity<CreationDTO> updateIsApproved(@RequestBody ApprovalDTO approvedReport) {
         try {
-            ReportDTO desiredReport = reportService.approveReport(approvedReport);
+            CreationDTO desiredReport = reportService.approveReport(approvedReport);
             return ResponseEntity.ok(desiredReport);
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();

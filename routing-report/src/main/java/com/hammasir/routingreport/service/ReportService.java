@@ -1,8 +1,11 @@
 package com.hammasir.routingreport.service;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hammasir.routingreport.component.ApplicationHandler;
-import com.hammasir.routingreport.model.dto.ApprovedDTO;
-import com.hammasir.routingreport.model.dto.ReportDTO;
+import com.hammasir.routingreport.model.dto.ApprovalDTO;
+import com.hammasir.routingreport.model.dto.CreationDTO;
+import com.hammasir.routingreport.model.dto.ReportDto;
 import com.hammasir.routingreport.model.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -16,10 +19,10 @@ public class ReportService {
 
     private final ApplicationHandler handler;
 
-    public ReportDTO createReport(ReportDTO reportDto) {
+    public CreationDTO createReport(CreationDTO creationDto) {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        reportDto.setUsername(user.getUsername());
-        return handler.createReport(reportDto);
+        creationDto.setUsername(user.getUsername());
+        return handler.createReport(creationDto);
     }
 
 //    public List<ReportDTO> getActiveReport(String location) {
@@ -30,7 +33,11 @@ public class ReportService {
 //        return handler.likeReport(reportId, status);
 //    }
 
-    public ReportDTO approveReport(ApprovedDTO approvedReport) {
+    public CreationDTO approveReport(ApprovalDTO approvedReport) {
         return handler.approveReport(approvedReport);
+    }
+
+    public List<ReportDto> getActiveReports(String location) {
+        return handler.getActiveReports(location);
     }
 }

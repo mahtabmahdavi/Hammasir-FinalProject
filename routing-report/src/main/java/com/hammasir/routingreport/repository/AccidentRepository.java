@@ -17,7 +17,10 @@ public interface AccidentRepository extends JpaRepository<AccidentReport, Long> 
             "AND ar.expirationTime > CURRENT_TIMESTAMP")
     boolean existsByLocationAndExpirationTime(@Param("location") String location);
 
-    @Query("SELECT ar FROM AccidentReport ar WHERE ST_DWithin(ST_Transform(ar.location, 3857), ST_Transform(:location, 3857), 10) = true " +
-            "AND ar.expirationTime > CURRENT_TIMESTAMP")
-    List<AccidentReport> findActive(@Param("location") Geometry location);
+    @Query(value = "SELECT ar " +
+            "FROM AccidentReport ar " +
+            "WHERE ST_DWithin(ST_Transform(ar.location, 3857), ST_Transform(:location, 3857), 10) = true " +
+            "AND ar.expirationTime > CURRENT_TIMESTAMP " +
+            "AND ar.isApproved = true")
+    List<AccidentReport> findByIsApprovedAndLocation(@Param("location") Geometry location);
 }

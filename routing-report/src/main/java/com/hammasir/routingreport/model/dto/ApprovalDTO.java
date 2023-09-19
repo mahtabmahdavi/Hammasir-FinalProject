@@ -7,7 +7,7 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ApprovedDTO {
+public class ApprovalDTO {
     private String type;
     private long reportId;
 }

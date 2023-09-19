@@ -1,7 +1,7 @@
 package com.hammasir.routingreport.service;
 
 import com.hammasir.routingreport.component.GeometryFactory;
-import com.hammasir.routingreport.model.dto.ReportDTO;
+import com.hammasir.routingreport.model.dto.CreationDTO;
 import com.hammasir.routingreport.model.entity.TrafficReport;
 import com.hammasir.routingreport.model.enums.Traffic;
 import com.hammasir.routingreport.repository.TrafficRepository;
@@ -19,8 +19,8 @@ public class TrafficService {
     private final AuthenticationService authenticationService;
     private final GeometryFactory geometryFactory;
 
-    public ReportDTO convertToReportDto(TrafficReport report) {
-        return ReportDTO.builder()
+    public CreationDTO convertToReportDto(TrafficReport report) {
+        return CreationDTO.builder()
                 .type(report.getType())
                 .category(report.getCategory().name())
                 .location(geometryFactory.createWkt(report.getLocation()))
@@ -28,7 +28,7 @@ public class TrafficService {
                 .build();
     }
 
-    public ReportDTO createTrafficReport(ReportDTO report) {
+    public CreationDTO createTrafficReport(CreationDTO report) {
         boolean isExisted = trafficRepository.existsByLocationAndExpirationTime(report.getLocation());
         if (!isExisted) {
             TrafficReport newReport = new TrafficReport();
@@ -48,7 +48,7 @@ public class TrafficService {
         }
     }
 
-    public ReportDTO getActiveTrafficReport(ReportDTO report) {
+    public CreationDTO getActiveTrafficReport(CreationDTO report) {
         return null;
     }
 }

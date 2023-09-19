@@ -7,7 +7,7 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ReportDTO {
+public class CreationDTO {
     private String type;
     private String category;
     private String location;

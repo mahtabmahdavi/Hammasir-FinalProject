@@ -1,9 +1,8 @@
 package com.hammasir.routingreport.service;
 
 import com.hammasir.routingreport.component.GeometryFactory;
-import com.hammasir.routingreport.model.dto.ApprovedDTO;
-import com.hammasir.routingreport.model.dto.ReportDTO;
-import com.hammasir.routingreport.model.entity.BumpReport;
+import com.hammasir.routingreport.model.dto.ApprovalDTO;
+import com.hammasir.routingreport.model.dto.CreationDTO;
 import com.hammasir.routingreport.model.entity.CameraReport;
 import com.hammasir.routingreport.model.enums.Camera;
 import com.hammasir.routingreport.repository.CameraRepository;
@@ -22,8 +21,8 @@ public class CameraService {
     private final AuthenticationService authenticationService;
     private final GeometryFactory geometryFactory;
 
-    public ReportDTO convertToReportDto(CameraReport report) {
-        return ReportDTO.builder()
+    public CreationDTO convertToReportDto(CameraReport report) {
+        return CreationDTO.builder()
                 .type(report.getType())
                 .category(report.getCategory().name())
                 .location(geometryFactory.createWkt(report.getLocation()))
@@ -31,7 +30,7 @@ public class CameraService {
                 .build();
     }
 
-    public ReportDTO createCameraReport(ReportDTO report) {
+    public CreationDTO createCameraReport(CreationDTO report) {
         boolean isExisted = cameraRepository.existsByLocationAndExpirationTime(report.getLocation());
         if (!isExisted) {
             CameraReport newReport = new CameraReport();
@@ -52,12 +51,12 @@ public class CameraService {
         }
     }
 
-    public ReportDTO getActiveCameraReport(ReportDTO report) {
+    public CreationDTO getActiveCameraReport(CreationDTO report) {
         return null;
     }
 
 
-    public ReportDTO approveCameraReport(ApprovedDTO approvedReport) {
+    public CreationDTO approveCameraReport(ApprovalDTO approvedReport) {
         Optional<CameraReport> desiredReport = cameraRepository.findById(approvedReport.getReportId());
         if (desiredReport.isPresent()) {
             CameraReport report = desiredReport.get();

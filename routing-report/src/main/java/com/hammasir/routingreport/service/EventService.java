@@ -1,7 +1,7 @@
 package com.hammasir.routingreport.service;
 
 import com.hammasir.routingreport.component.GeometryFactory;
-import com.hammasir.routingreport.model.dto.ReportDTO;
+import com.hammasir.routingreport.model.dto.CreationDTO;
 import com.hammasir.routingreport.model.entity.EventReport;
 import com.hammasir.routingreport.model.enums.Event;
 import com.hammasir.routingreport.repository.EventRepository;
@@ -19,8 +19,8 @@ public class EventService {
     private final AuthenticationService authenticationService;
     private final GeometryFactory geometryFactory;
 
-    public ReportDTO convertToReportDto(EventReport report) {
-        return ReportDTO.builder()
+    public CreationDTO convertToReportDto(EventReport report) {
+        return CreationDTO.builder()
                 .type(report.getType())
                 .category(report.getCategory().name())
                 .location(geometryFactory.createWkt(report.getLocation()))
@@ -28,7 +28,7 @@ public class EventService {
                 .build();
     }
 
-    public ReportDTO createEventReport(ReportDTO report) {
+    public CreationDTO createEventReport(CreationDTO report) {
         boolean isExisted = eventRepository.existsByLocationAndExpirationTime(report.getLocation());
         if (!isExisted) {
             EventReport newReport = new EventReport();
@@ -48,7 +48,7 @@ public class EventService {
         }
     }
 
-    public ReportDTO getActiveEventReport(ReportDTO report) {
+    public CreationDTO getActiveEventReport(CreationDTO report) {
         return null;
     }
 

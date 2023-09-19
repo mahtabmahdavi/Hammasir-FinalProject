@@ -1,7 +1,7 @@
 package com.hammasir.routingreport.service;
 
 import com.hammasir.routingreport.component.GeometryFactory;
-import com.hammasir.routingreport.model.dto.ReportDTO;
+import com.hammasir.routingreport.model.dto.CreationDTO;
 import com.hammasir.routingreport.model.entity.PoliceReport;
 import com.hammasir.routingreport.model.enums.Police;
 import com.hammasir.routingreport.repository.PoliceRepository;
@@ -19,8 +19,8 @@ public class PoliceService {
     private final AuthenticationService authenticationService;
     private final GeometryFactory geometryFactory;
 
-    public ReportDTO convertToReportDto(PoliceReport report) {
-        return ReportDTO.builder()
+    public CreationDTO convertToReportDto(PoliceReport report) {
+        return CreationDTO.builder()
                 .type(report.getType())
                 .category(report.getCategory().name())
                 .location(geometryFactory.createWkt(report.getLocation()))
@@ -28,7 +28,7 @@ public class PoliceService {
                 .build();
     }
 
-    public ReportDTO createPoliceReport(ReportDTO report) {
+    public CreationDTO createPoliceReport(CreationDTO report) {
         boolean isExisted = policeRepository.existsByLocationAndExpirationTime(report.getLocation());
         if (!isExisted) {
             PoliceReport newReport = new PoliceReport();
@@ -48,7 +48,7 @@ public class PoliceService {
         }
     }
 
-    public ReportDTO getActivePoliceReport(ReportDTO report) {
+    public CreationDTO getActivePoliceReport(CreationDTO report) {
         return null;
     }
 }

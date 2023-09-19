@@ -1,8 +1,8 @@
 package com.hammasir.routingreport.service;
 
 import com.hammasir.routingreport.component.GeometryFactory;
-import com.hammasir.routingreport.model.dto.ApprovedDTO;
-import com.hammasir.routingreport.model.dto.ReportDTO;
+import com.hammasir.routingreport.model.dto.ApprovalDTO;
+import com.hammasir.routingreport.model.dto.CreationDTO;
 import com.hammasir.routingreport.model.entity.BugReport;
 import com.hammasir.routingreport.model.enums.Bug;
 import com.hammasir.routingreport.repository.BugRepository;
@@ -21,8 +21,8 @@ public class BugService {
     private final AuthenticationService authenticationService;
     private final GeometryFactory geometryFactory;
 
-    public ReportDTO convertToReportDto(BugReport report) {
-        return ReportDTO.builder()
+    public CreationDTO convertToReportDto(BugReport report) {
+        return CreationDTO.builder()
                 .type(report.getType())
                 .category(report.getCategory().name())
                 .location(geometryFactory.createWkt(report.getLocation()))
@@ -30,7 +30,7 @@ public class BugService {
                 .build();
     }
 
-    public ReportDTO createBugReport(ReportDTO report) {
+    public CreationDTO createBugReport(CreationDTO report) {
         boolean isExisted = bugRepository.existsByLocationAndExpirationTime(report.getLocation());
         if (!isExisted) {
             BugReport newReport = new BugReport();
@@ -50,12 +50,12 @@ public class BugService {
         }
     }
 
-    public ReportDTO getActiveBugReport(ReportDTO report) {
+    public CreationDTO getActiveBugReport(CreationDTO report) {
         return null;
     }
 
 
-    public ReportDTO approveBugReport(ApprovedDTO approvedReport) {
+    public CreationDTO approveBugReport(ApprovalDTO approvedReport) {
         Optional<BugReport> desiredReport = bugRepository.findById(approvedReport.getReportId());
         if (desiredReport.isPresent()) {
             BugReport report = desiredReport.get();

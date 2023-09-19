@@ -1,9 +1,8 @@
 package com.hammasir.routingreport.service;
 
 import com.hammasir.routingreport.component.GeometryFactory;
-import com.hammasir.routingreport.model.dto.ApprovedDTO;
-import com.hammasir.routingreport.model.dto.ReportDTO;
-import com.hammasir.routingreport.model.entity.BugReport;
+import com.hammasir.routingreport.model.dto.ApprovalDTO;
+import com.hammasir.routingreport.model.dto.CreationDTO;
 import com.hammasir.routingreport.model.entity.BumpReport;
 import com.hammasir.routingreport.repository.BumpRepository;
 import lombok.RequiredArgsConstructor;
@@ -21,8 +20,8 @@ public class BumpService {
     private final AuthenticationService authenticationService;
     private final GeometryFactory geometryFactory;
 
-    public ReportDTO convertToReportDto(BumpReport report) {
-        return ReportDTO.builder()
+    public CreationDTO convertToReportDto(BumpReport report) {
+        return CreationDTO.builder()
                 .type(report.getType())
                 .category(null)
                 .location(geometryFactory.createWkt(report.getLocation()))
@@ -30,7 +29,7 @@ public class BumpService {
                 .build();
     }
 
-    public ReportDTO createBumpReport(ReportDTO report) {
+    public CreationDTO createBumpReport(CreationDTO report) {
         boolean isExisted = bumpRepository.existsByLocationAndExpirationTime(report.getLocation());
         if (!isExisted) {
             BumpReport newReport = new BumpReport();
@@ -49,11 +48,11 @@ public class BumpService {
         }
     }
 
-    public ReportDTO getActiveBumpReport(ReportDTO report) {
+    public CreationDTO getActiveBumpReport(CreationDTO report) {
         return null;
     }
 
-    public ReportDTO approveBumpReport(ApprovedDTO approvedReport) {
+    public CreationDTO approveBumpReport(ApprovalDTO approvedReport) {
         Optional<BumpReport> desiredReport = bumpRepository.findById(approvedReport.getReportId());
         if (desiredReport.isPresent()) {
             BumpReport report = desiredReport.get();

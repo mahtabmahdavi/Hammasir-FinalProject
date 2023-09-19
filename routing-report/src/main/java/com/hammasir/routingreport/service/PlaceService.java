@@ -1,9 +1,8 @@
 package com.hammasir.routingreport.service;
 
 import com.hammasir.routingreport.component.GeometryFactory;
-import com.hammasir.routingreport.model.dto.ApprovedDTO;
-import com.hammasir.routingreport.model.dto.ReportDTO;
-import com.hammasir.routingreport.model.entity.BumpReport;
+import com.hammasir.routingreport.model.dto.ApprovalDTO;
+import com.hammasir.routingreport.model.dto.CreationDTO;
 import com.hammasir.routingreport.model.entity.PlaceReport;
 import com.hammasir.routingreport.model.enums.Place;
 import com.hammasir.routingreport.repository.PlaceRepository;
@@ -22,8 +21,8 @@ public class PlaceService {
     private final AuthenticationService authenticationService;
     private final GeometryFactory geometryFactory;
 
-    public ReportDTO convertToReportDto(PlaceReport report) {
-        return ReportDTO.builder()
+    public CreationDTO convertToReportDto(PlaceReport report) {
+        return CreationDTO.builder()
                 .type(report.getType())
                 .category(report.getCategory().name())
                 .location(geometryFactory.createWkt(report.getLocation()))
@@ -31,7 +30,7 @@ public class PlaceService {
                 .build();
     }
 
-    public ReportDTO createPlaceReport(ReportDTO report) {
+    public CreationDTO createPlaceReport(CreationDTO report) {
         boolean isExisted = placeRepository.existsByLocationAndExpirationTime(report.getLocation());
         if (!isExisted) {
             PlaceReport newReport = new PlaceReport();
@@ -51,11 +50,11 @@ public class PlaceService {
         }
     }
 
-    public ReportDTO getActivePlaceReport(ReportDTO report) {
+    public CreationDTO getActivePlaceReport(CreationDTO report) {
         return null;
     }
 
-    public ReportDTO approvePlaceReport(ApprovedDTO approvedReport) {
+    public CreationDTO approvePlaceReport(ApprovalDTO approvedReport) {
         Optional<PlaceReport> desiredReport = placeRepository.findById(approvedReport.getReportId());
         if (desiredReport.isPresent()) {
             PlaceReport report = desiredReport.get();
