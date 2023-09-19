@@ -3,6 +3,7 @@ package com.hammasir.routingreport.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hammasir.routingreport.component.GeometryFactory;
 import com.hammasir.routingreport.model.dto.ReportDto;
+import com.hammasir.routingreport.model.entity.BugReport;
 import com.hammasir.routingreport.model.entity.TrafficReport;
 import com.hammasir.routingreport.model.enums.Traffic;
 import com.hammasir.routingreport.repository.TrafficRepository;
@@ -19,7 +20,15 @@ public class TrafficService {
     private final TrafficRepository trafficRepository;
     private final AuthenticationService authenticationService;
     private final GeometryFactory geometryFactory;
-    private final ObjectMapper objectMapper;
+
+    public ReportDto convertToReportDto(TrafficReport report) {
+        return ReportDto.builder()
+                .type(report.getType())
+                .category(report.getCategory().name())
+                .location(geometryFactory.createWkt(report.getLocation()))
+                .username(report.getUser().getUsername())
+                .build();
+    }
 
     public ReportDto createTrafficReport(ReportDto report) {
         boolean isExisted = trafficRepository.existsByLocationAndExpirationTime(report.getLocation());
@@ -31,12 +40,11 @@ public class TrafficService {
             newReport.setDuration(1);
             newReport.setCreationTime(LocalDateTime.now());
             newReport.setExpirationTime(LocalDateTime.now().plusHours(newReport.getDuration()));
-            newReport.setLocation(geometryFactory.createGeometry(report));
+            newReport.setLocation(geometryFactory.createGeometry(report.getLocation()));
             newReport.setCategory(Traffic.fromValue(report.getCategory()));
             newReport.setContributors(List.of());
             newReport.setUser(authenticationService.findUser(report.getUsername()));
-            trafficRepository.save(newReport);
-            return objectMapper.convertValue(newReport, ReportDto.class);
+            return convertToReportDto(trafficRepository.save(newReport));
         } else {
             throw new IllegalArgumentException("This report is already existed!");
         }

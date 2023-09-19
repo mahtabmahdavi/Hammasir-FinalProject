@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 public interface BumpRepository extends JpaRepository<BumpReport, Long> {
 
     @Query("SELECT CASE WHEN COUNT(br) > 0 THEN true ELSE false END " +
-            "FROM BumpReport br WHERE ST_Equals(br.location, ST_GeomFromText(:location)) " +
+            "FROM BumpReport br WHERE ST_Equals(br.location, ST_GeomFromText(:location, 4326)) = true " +
             "AND br.expirationTime > CURRENT_TIMESTAMP")
     boolean existsByLocationAndExpirationTime(@Param("location") String location);
 

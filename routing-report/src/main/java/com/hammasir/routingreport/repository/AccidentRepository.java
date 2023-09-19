@@ -13,7 +13,7 @@ import java.util.List;
 public interface AccidentRepository extends JpaRepository<AccidentReport, Long> {
 
     @Query("SELECT CASE WHEN COUNT(ar) > 0 THEN true ELSE false END " +
-            "FROM AccidentReport ar WHERE ST_Equals(ar.location, ST_GeomFromText(:location)) " +
+            "FROM AccidentReport ar WHERE ST_Equals(ar.location, ST_GeomFromText(:location, 4326)) = true " +
             "AND ar.expirationTime > CURRENT_TIMESTAMP")
     boolean existsByLocationAndExpirationTime(@Param("location") String location);
 

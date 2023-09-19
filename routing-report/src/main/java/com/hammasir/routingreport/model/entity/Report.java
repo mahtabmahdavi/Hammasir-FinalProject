@@ -14,7 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 @Entity
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
-public class Report {
+public abstract class Report {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "report_id")
     @SequenceGenerator(name = "report_id", sequenceName = "report_id_seq", allocationSize = 1)

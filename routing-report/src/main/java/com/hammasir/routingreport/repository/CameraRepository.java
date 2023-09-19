@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 public interface CameraRepository extends JpaRepository<CameraReport, Long> {
 
     @Query("SELECT CASE WHEN COUNT(cr) > 0 THEN true ELSE false END " +
-            "FROM CameraReport cr WHERE ST_Equals(cr.location, ST_GeomFromText(:location)) " +
+            "FROM CameraReport cr WHERE ST_Equals(cr.location, ST_GeomFromText(:location, 4326)) = true " +
             "AND cr.expirationTime > CURRENT_TIMESTAMP")
     boolean existsByLocationAndExpirationTime(@Param("location") String location);
 

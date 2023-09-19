@@ -38,7 +38,8 @@ public class ReportController {
             ReportDto createdReport = reportService.createReport(report);
             return ResponseEntity.ok(createdReport);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            System.out.println(e.getMessage());
+            return ResponseEntity.badRequest().build();
         }
     }
 }

@@ -3,6 +3,7 @@ package com.hammasir.routingreport.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hammasir.routingreport.component.GeometryFactory;
 import com.hammasir.routingreport.model.dto.ReportDto;
+import com.hammasir.routingreport.model.entity.BugReport;
 import com.hammasir.routingreport.model.entity.EventReport;
 import com.hammasir.routingreport.model.enums.Event;
 import com.hammasir.routingreport.repository.EventRepository;
@@ -19,7 +20,15 @@ public class EventService {
     private final EventRepository eventRepository;
     private final AuthenticationService authenticationService;
     private final GeometryFactory geometryFactory;
-    private final ObjectMapper objectMapper;
+
+    public ReportDto convertToReportDto(EventReport report) {
+        return ReportDto.builder()
+                .type(report.getType())
+                .category(report.getCategory().name())
+                .location(geometryFactory.createWkt(report.getLocation()))
+                .username(report.getUser().getUsername())
+                .build();
+    }
 
     public ReportDto createEventReport(ReportDto report) {
         boolean isExisted = eventRepository.existsByLocationAndExpirationTime(report.getLocation());
@@ -31,12 +40,11 @@ public class EventService {
             newReport.setDuration(1);
             newReport.setCreationTime(LocalDateTime.now());
             newReport.setExpirationTime(LocalDateTime.now().plusHours(newReport.getDuration()));
-            newReport.setLocation(geometryFactory.createGeometry(report));
+            newReport.setLocation(geometryFactory.createGeometry(report.getLocation()));
             newReport.setCategory(Event.fromValue(report.getCategory()));
             newReport.setContributors(List.of());
             newReport.setUser(authenticationService.findUser(report.getUsername()));
-            eventRepository.save(newReport);
-            return objectMapper.convertValue(newReport, ReportDto.class);
+            return convertToReportDto(eventRepository.save(newReport));
         } else {
             throw new IllegalArgumentException("This report is already existed!");
         }

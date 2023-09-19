@@ -1,6 +1,5 @@
 package com.hammasir.routingreport.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hammasir.routingreport.component.GeometryFactory;
 import com.hammasir.routingreport.model.dto.ReportDto;
 import com.hammasir.routingreport.model.entity.AccidentReport;
@@ -19,7 +18,15 @@ public class AccidentService {
     private final AccidentRepository accidentRepository;
     private final AuthenticationService authenticationService;
     private final GeometryFactory geometryFactory;
-    private final ObjectMapper objectMapper;
+
+    public ReportDto convertToReportDto(AccidentReport report) {
+        return ReportDto.builder()
+                .type(report.getType())
+                .category(report.getCategory().name())
+                .location(geometryFactory.createWkt(report.getLocation()))
+                .username(report.getUser().getUsername())
+                .build();
+    }
 
     public ReportDto createAccidentReport(ReportDto report) {
         boolean isExisted = accidentRepository.existsByLocationAndExpirationTime(report.getLocation());
@@ -31,12 +38,11 @@ public class AccidentService {
             newReport.setDuration(1);
             newReport.setCreationTime(LocalDateTime.now());
             newReport.setExpirationTime(LocalDateTime.now().plusHours(newReport.getDuration()));
-            newReport.setLocation(geometryFactory.createGeometry(report));
+            newReport.setLocation(geometryFactory.createGeometry(report.getLocation()));
             newReport.setCategory(Accident.fromValue(report.getCategory()));
             newReport.setContributors(List.of());
             newReport.setUser(authenticationService.findUser(report.getUsername()));
-            accidentRepository.save(newReport);
-            return objectMapper.convertValue(newReport, ReportDto.class);
+            return convertToReportDto(accidentRepository.save(newReport));
         } else {
             throw new IllegalArgumentException("This report is already existed!");
         }

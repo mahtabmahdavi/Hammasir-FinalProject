@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 public interface EventRepository extends JpaRepository<EventReport, Long> {
 
     @Query("SELECT CASE WHEN COUNT(er) > 0 THEN true ELSE false END " +
-            "FROM EventReport er WHERE ST_Equals(er.location, ST_GeomFromText(:location)) " +
+            "FROM EventReport er WHERE ST_Equals(er.location, ST_GeomFromText(:location, 4326)) = true " +
             "AND er.expirationTime > CURRENT_TIMESTAMP")
     boolean existsByLocationAndExpirationTime(@Param("location") String location);
 

@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 public interface PoliceRepository extends JpaRepository<PoliceReport, Long> {
 
     @Query("SELECT CASE WHEN COUNT(pr) > 0 THEN true ELSE false END " +
-            "FROM PoliceReport pr WHERE ST_Equals(pr.location, ST_GeomFromText(:location)) " +
+            "FROM PoliceReport pr WHERE ST_Equals(pr.location, ST_GeomFromText(:location, 4326)) = true " +
             "AND pr.expirationTime > CURRENT_TIMESTAMP")
     boolean existsByLocationAndExpirationTime(@Param("location") String location);
 
