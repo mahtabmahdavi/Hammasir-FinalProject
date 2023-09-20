@@ -89,7 +89,7 @@ public class CameraReportService implements ReportService {
         CameraReport report = cameraRepository.findById(likedReport.getReportId())
                 .orElseThrow(() -> new IllegalArgumentException("Report is NOT found!"));
         List<Long> contributors = report.getContributors();
-        User desiredUser = authenticationService.findUser(likedReport.getUsername());
+        User desiredUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (contributors.contains(desiredUser.getId())) {
             throw new IllegalArgumentException("User has already liked or disliked this report.");
         } else {

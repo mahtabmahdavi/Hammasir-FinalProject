@@ -11,5 +11,4 @@ public class ChangeDTO {
     private String type;
     private long reportId;
     private boolean status;
-    private String username;
 }

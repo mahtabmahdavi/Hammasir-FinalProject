@@ -1,5 +1,5 @@
 package com.hammasir.routingreport.repository;
-;
+
 import com.hammasir.routingreport.model.entity.report.WeatherReport;
 import org.locationtech.jts.geom.Geometry;
 import org.springframework.data.jpa.repository.JpaRepository;

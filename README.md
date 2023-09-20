@@ -48,22 +48,22 @@ curl --location --request GET 'localhost:8080/reports/active' \
 ```
 curl --location --request PUT 'localhost:8080/reports/like' \
 --header 'Content-Type: application/json' \
---header 'Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzaW5haG9zc2VpbmkiLCJpYXQiOjE2OTUxNDU1MzAsImV4cCI6MTY5NTIzMTkzMH0.iNSJ8lNZhSuTtcSaK4merHjdyX02vvr4Iak58sjPE9I' \
+--header 'Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzYXJhbmF5ZWJpIiwiaWF0IjoxNjk1MjI0NzY4LCJleHAiOjE2OTUzMTExNjh9.ho6G941w1nq9pJGciOPi1LuA6TMpm896-ghy7huuubQ' \
 --data '{
-    "type": "bug",
-    "reportId": 16,
-    "status": true,
-    "username": "sinahosseini"
+    "type": "traffic",
+    "reportId": 29,
+    "status": true
 }'
 ```
 - Operator approval for some reports that require approval:
 ```
 curl --location --request PUT 'localhost:8080/reports/approve' \
 --header 'Content-Type: application/json' \
---header 'Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzYXJhbmF5ZWJpIiwiaWF0IjoxNjk1MTE5Mjg4LCJleHAiOjE2OTUyMDU2ODh9.BnnJoVuP2NVMQUPnlM7MH-e0udtjpcvYDIgWf1EY16A' \
+--header 'Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtYWh0YWJtYWhkYXZpIiwiaWF0IjoxNjk1MjA1OTU3LCJleHAiOjE2OTUyOTIzNTd9.x84pgOOZ27vQJiWF9OVMleFNS85IFd4EM7T5YA_YWsg' \
 --data '{
-    "type": "bump",
-    "reportId": 17
+    "type": "bug",
+    "reportId": 20,
+    "status": false
 }'
 ```
 - The most accidental hour:
