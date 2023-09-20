@@ -1,5 +1,6 @@
-package com.hammasir.routingreport.component;
+package com.hammasir.routingreport.service;
 
+import com.hammasir.routingreport.component.ReportServiceFactory;
 import com.hammasir.routingreport.model.DTO.ChangeDTO;
 import com.hammasir.routingreport.model.DTO.ReportDTO;
 import lombok.RequiredArgsConstructor;

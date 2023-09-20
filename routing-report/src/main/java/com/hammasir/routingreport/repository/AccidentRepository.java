@@ -1,7 +1,6 @@
 package com.hammasir.routingreport.repository;
 
-import com.hammasir.routingreport.model.DTO.TimeDTO;
-import com.hammasir.routingreport.model.entity.AccidentReport;
+import com.hammasir.routingreport.model.entity.report.AccidentReport;
 import org.locationtech.jts.geom.Geometry;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -9,8 +8,6 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.Set;
 
 @Repository
 public interface AccidentRepository extends JpaRepository<AccidentReport, Long> {

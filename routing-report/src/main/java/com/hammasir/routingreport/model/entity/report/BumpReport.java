@@ -1,5 +1,6 @@
-package com.hammasir.routingreport.model.entity;
+package com.hammasir.routingreport.model.entity.report;
 
+import com.hammasir.routingreport.model.entity.Report;
 import jakarta.persistence.*;
 import lombok.*;
 

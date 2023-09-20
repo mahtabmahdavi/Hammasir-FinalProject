@@ -6,7 +6,7 @@ import com.hammasir.routingreport.model.DTO.ChangeDTO;
 import com.hammasir.routingreport.model.DTO.ReportDTO;
 import com.hammasir.routingreport.model.DTO.TimeDTO;
 import com.hammasir.routingreport.model.entity.User;
-import com.hammasir.routingreport.component.ReportHandler;
+import com.hammasir.routingreport.service.ReportHandler;
 import com.hammasir.routingreport.service.report.AccidentReportService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

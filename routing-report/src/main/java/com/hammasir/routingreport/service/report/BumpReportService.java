@@ -3,12 +3,15 @@ package com.hammasir.routingreport.service.report;
 import com.hammasir.routingreport.component.GeometryHandler;
 import com.hammasir.routingreport.model.DTO.ChangeDTO;
 import com.hammasir.routingreport.model.DTO.ReportDTO;
-import com.hammasir.routingreport.model.entity.BumpReport;
+import com.hammasir.routingreport.model.entity.report.BumpReport;
 import com.hammasir.routingreport.model.entity.User;
 import com.hammasir.routingreport.repository.BumpRepository;
 import com.hammasir.routingreport.service.AuthenticationService;
 import com.hammasir.routingreport.service.ReportService;
 import lombok.RequiredArgsConstructor;
+import org.redisson.api.RLock;
+import org.redisson.api.RedissonClient;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,6 +19,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @Service
@@ -26,6 +30,7 @@ public class BumpReportService implements ReportService {
     private final BumpRepository bumpRepository;
     private final AuthenticationService authenticationService;
     private final GeometryHandler geometryHandler;
+    private final RedissonClient redissonClient;
 
     public ReportDTO convertToReportDto(BumpReport report) {
         return ReportDTO.builder()
@@ -38,20 +43,34 @@ public class BumpReportService implements ReportService {
 
     @Override
     public ReportDTO createReport(ReportDTO report) {
-        boolean isExisted = bumpRepository.existsByLocationAndExpirationTime(report.getLocation());
-        if (!isExisted) {
-            BumpReport newReport = new BumpReport();
-            newReport.setType(report.getType());
-            newReport.setIsApproved(false);
-            newReport.setDuration(1);
-            newReport.setCreationTime(LocalDateTime.now());
-            newReport.setExpirationTime(LocalDateTime.now().plusYears(newReport.getDuration()));
-            newReport.setLocation(geometryHandler.createGeometry(report.getLocation()));
-            newReport.setContributors(List.of());
-            newReport.setUser(authenticationService.findUser(report.getUsername()));
-            return convertToReportDto(bumpRepository.save(newReport));
-        } else {
-            throw new IllegalArgumentException("This report is already existed!");
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String lockKey = report.getType() + "_report_creation_lock_" + user.getId();
+        RLock lock = redissonClient.getLock(lockKey);
+        try {
+            boolean isLocked = lock.tryLock(60, TimeUnit.SECONDS);
+            if (isLocked) {
+                boolean isExisted = bumpRepository.existsByLocationAndExpirationTime(report.getLocation());
+                if (!isExisted) {
+                    BumpReport newReport = new BumpReport();
+                    newReport.setType(report.getType());
+                    newReport.setIsApproved(false);
+                    newReport.setDuration(1);
+                    newReport.setCreationTime(LocalDateTime.now());
+                    newReport.setExpirationTime(LocalDateTime.now().plusYears(newReport.getDuration()));
+                    newReport.setLocation(geometryHandler.createGeometry(report.getLocation()));
+                    newReport.setContributors(List.of());
+                    newReport.setUser(authenticationService.findUser(report.getUsername()));
+                    return convertToReportDto(bumpRepository.save(newReport));
+                } else {
+                    throw new IllegalArgumentException("This report is already existed!");
+                }
+            } else {
+                return null;
+            }
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        } finally {
+            lock.unlock();
         }
     }
 

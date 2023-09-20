@@ -1,6 +1,6 @@
 package com.hammasir.routingreport.repository;
 
-import com.hammasir.routingreport.model.entity.CameraReport;
+import com.hammasir.routingreport.model.entity.report.CameraReport;
 import org.locationtech.jts.geom.Geometry;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -25,5 +25,4 @@ public interface CameraRepository extends JpaRepository<CameraReport, Long> {
             "AND cr.expirationTime > CURRENT_TIMESTAMP " +
             "AND cr.isApproved = true")
     List<CameraReport> findByLocationAndExpirationTimeAndIsApproved(@Param("location") Geometry location);
-
 }

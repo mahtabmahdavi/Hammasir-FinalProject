@@ -1,6 +1,6 @@
 package com.hammasir.routingreport.repository;
 
-import com.hammasir.routingreport.model.entity.BugReport;
+import com.hammasir.routingreport.model.entity.report.BugReport;
 import org.locationtech.jts.geom.Geometry;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
